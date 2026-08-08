@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CARE — Member Voice Prototype</title>
+<style>
+  :root{
+    --navy-900:#0f1f4d;
+    --navy-800:#16296b;
+    --navy-700:#1c3f91;
+    --blue-600:#2b57c9;
+    --blue-500:#3b6fe0;
+    --blue-50:#eef2fd;
+    --red-600:#e0263d;
+    --orange-600:#f5821f;
+    --orange-50:#fff2e3;
+    --green-600:#1f9d55;
+    --green-50:#e8f8ef;
+    --gray-900:#1b1e28;
+    --gray-600:#5b6172;
+    --gray-400:#9aa0b1;
+    --gray-200:#e4e7ee;
+    --gray-100:#f4f5f9;
+    --white:#ffffff;
+    --radius:16px;
+    --shadow:0 8px 24px rgba(15,31,77,0.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(180deg,#eef1fb,#dfe6f7 40%,#eef1fb);
+    color:var(--gray-900);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:28px 16px 60px;
+  }
+  .page-head{
+    text-align:center;
+    max-width:640px;
+    margin-bottom:22px;
+  }
+  .page-head h1{
+    font-size:22px;
+    margin:0 0 6px;
+    color:var(--navy-800);
+    letter-spacing:.2px;
+  }
+  .page-head p{
+    margin:0;
+    color:var(--gray-600);
+    font-size:13.5px;
+  }
+  .stepper{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:18px 0 26px;
+    max-width:900px;
+  }
+  .step-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--white);
+    border:1px solid var(--gray-200);
+    border-radius:999px;
+    padding:7px 14px 7px 7px;
+    cursor:pointer;
+    font-size:12.5px;
+    color:var(--navy-800);
+    font-weight:600;
+    transition:.15s;
+    box-shadow:0 2px 6px rgba(15,31,77,0.06);
+  }
+  .step-btn:hover{ transform:translateY(-1px); box-shadow:0 6px 14px rgba(15,31,77,0.12); }
+  .step-btn.active{ background:var(--navy-800); color:var(--white); border-color:var(--navy-800); }
+  .step-btn .num{
+    width:20px;height:20px;border-radius:50%;
+    background:var(--navy-700);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px; flex:none;
+  }
+  .step-btn.active .num{ background:var(--white); color:var(--navy-800); }
+
+  .stage{
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    justify-content:center;
+    flex-wrap:wrap;
+    width:100%;
+    max-width:1100px;
+  }
+
+  /* Phone frame */
+  .phone{
+    width:360px;
+    height:760px;
+    background:#0b0e18;
+    border-radius:46px;
+    padding:12px;
+    box-shadow:0 30px 60px rgba(10,20,60,0.28), 0 2px 0 rgba(255,255,255,0.4) inset;
+    position:relative;
+    flex:none;
+  }
+  .phone-screen{
+    width:100%;
+    height:100%;
+    background:var(--gray-100);
+    border-radius:34px;
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  .notch{
+    position:absolute;
+    top:0; left:50%; transform:translateX(-50%);
+    width:120px; height:22px;
+    background:#0b0e18;
+    border-radius:0 0 16px 16px;
+    z-index:50;
+  }
+  .status-bar{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 22px 4px;
+    font-size:13px; font-weight:600; color:var(--gray-900);
+    background:transparent;
+    flex:none;
+  }
+  .status-bar .icons{ display:flex; gap:5px; align-items:center; font-size:12px; }
+
+  .app-body{
+    flex:1;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    -webkit-overflow-scrolling:touch;
+  }
+  .app-body::-webkit-scrollbar{ width:0; }
+
+  .screen{ display:none; flex-direction:column; height:100%; }
+  .screen.active{ display:flex; }
+
+  /* Generic header */
+  .app-header{
+    background:linear-gradient(135deg,var(--navy-800),var(--navy-700));
+    color:#fff;
+    padding:14px 18px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:none;
+  }
+  .app-header .title-block{ flex:1; }
+  .app-header h2{ margin:0; font-size:17px; font-weight:700; }
+  .app-header .sub{ font-size:11.5px; opacity:.8; margin-top:2px; }
+  .icon-btn{
+    width:34px;height:34px;border-radius:10px;
+    background:rgba(255,255,255,0.12);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer; font-size:16px; color:#fff; flex:none;
+    border:none;
+    position:relative;
+  }
+  .icon-btn:hover{ background:rgba(255,255,255,0.22); }
+  .badge{
+    position:absolute; top:-4px; right:-4px;
+    background:var(--red-600); color:#fff;
+    font-size:9px; font-weight:700;
+    border-radius:999px; padding:1px 5px;
+    min-width:15px; text-align:center;
+  }
+
+  .content-scroll{ padding:16px 16px 90px; flex:1; }
+
+  /* myTMMIN home */
+  .brand-strip{
+    display:flex; gap:6px; overflow-x:auto; padding:12px 14px;
+    background:linear-gradient(135deg,#c8102e,#8f0d21);
+  }
+  .brand-strip span{
+    background:rgba(255,255,255,0.18);
+    color:#fff; font-size:10px; font-weight:700;
+    padding:5px 9px; border-radius:8px; white-space:nowrap;
+  }
+  .app-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-top:14px;
+  }
+  .app-tile{
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    cursor:pointer;
+    padding:6px 2px;
+    border-radius:12px;
+    transition:.15s;
+  }
+  .app-tile:hover{ background:rgba(43,87,201,0.08); }
+  .app-tile .ic{
+    width:48px;height:48px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;
+    background:var(--blue-50); color:var(--blue-600);
+  }
+  .app-tile span{ font-size:10.5px; text-align:center; color:var(--gray-600); font-weight:600; line-height:1.2; }
+  .app-tile.highlight .ic{
+    background:linear-gradient(135deg,#1f9d55,#0f7a3d);
+    color:#fff;
+    box-shadow:0 0 0 4px rgba(31,157,85,0.18);
+    animation:pulse 1.8s infinite;
+  }
+  .app-tile.highlight span{ color:var(--green-600); font-weight:800; }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(31,157,85,0.35); }
+    70%{ box-shadow:0 0 0 8px rgba(31,157,85,0); }
+    100%{ box-shadow:0 0 0 0 rgba(31,157,85,0); }
+  }
+  .helper-banner{
+    margin-top:16px;
+    background:var(--white);
+    border:1px dashed var(--gray-200);
+    border-radius:12px;
+    padding:10px 12px;
+    font-size:11.5px;
+    color:var(--gray-600);
+    display:flex; gap:8px; align-items:center;
+  }
+
+  /* CARE home */
+  .care-hero{
+    background:linear-gradient(135deg,var(--navy-800),var(--navy-700));
+    color:#fff;
+    padding:22px 18px 26px;
+    flex:none;
+  }
+  .care-hero .logo{
+    width:44px;height:44px;border-radius:12px;
+    background:rgba(255,255,255,0.15);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px; margin-bottom:10px;
+  }
+  .care-hero h1{ margin:0 0 4px; font-size:22px; letter-spacing:.5px; }
+  .care-hero .tagline{ font-size:11px; opacity:.85; font-weight:600; letter-spacing:.3px; text-transform:uppercase; }
+  .care-hero .desc{ font-size:12px; opacity:.85; margin-top:8px; line-height:1.4; }
+
+  .menu-card{
+    background:var(--white);
+    border-radius:16px;
+    padding:14px 16px;
+    display:flex; align-items:center; gap:12px;
+    box-shadow:var(--shadow);
+    margin-bottom:12px;
+    cursor:pointer;
+    border:1px solid var(--gray-200);
+    transition:.15s;
+  }
+  .menu-card:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(15,31,77,0.14); }
+  .menu-card .ic{
+    width:42px;height:42px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px; flex:none;
+  }
+  .menu-card .ic.voice{ background:var(--blue-50); color:var(--blue-600); }
+  .menu-card .ic.tft{ background:var(--orange-50); color:var(--orange-600); }
+  .menu-card .ic.survey{ background:var(--green-50); color:var(--green-600); }
+  .menu-card .txt{ flex:1; }
+  .menu-card .txt b, .action-card .txt b{ display:block; font-size:14px; margin-bottom:2px; }
+  .menu-card .txt small, .action-card .txt small{ color:var(--gray-600); font-size:11.5px; }
+  .menu-card .chev{ color:var(--gray-400); font-size:16px; }
+
+  /* Voice home */
+  .action-card{
+    background:var(--white); border-radius:16px; padding:14px 16px;
+    display:flex; align-items:center; gap:12px; margin-bottom:10px;
+    box-shadow:var(--shadow); cursor:pointer; border:1px solid var(--gray-200);
+  }
+  .action-card:hover{ transform:translateY(-2px); }
+  .action-card .ic{
+    width:42px;height:42px;border-radius:12px;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:19px;flex:none;
+  }
+  .action-card .txt{ flex:1; }
+  .action-card .chev{ color:var(--gray-400); font-size:16px; }
+  .action-card.primary .ic{ background:linear-gradient(135deg,var(--blue-600),#1d3f9e); }
+  .action-card.secondary .ic{ background:linear-gradient(135deg,#1f9d55,#0f7a3d); }
+  .section-label{ font-size:12.5px; font-weight:700; color:var(--gray-600); margin:18px 0 10px; text-transform:uppercase; letter-spacing:.4px; }
+  .stats-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .stat-card{
+    background:var(--white); border-radius:14px; padding:12px;
+    border:1px solid var(--gray-200); cursor:pointer; transition:.15s;
+  }
+  .stat-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
+  .stat-card .num{ font-size:22px; font-weight:800; color:var(--navy-800); }
+  .stat-card .lbl{ font-size:11px; color:var(--gray-600); margin-top:2px; font-weight:600; }
+  .stat-card.warn .num{ color:var(--red-600); }
+  .stat-card.klar .num{ color:var(--orange-600); }
+  .stat-card.proc .num{ color:var(--blue-600); }
+  .stat-card.done .num{ color:var(--green-600); }
+
+  /* Form */
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12.5px; font-weight:700; color:var(--gray-900); margin-bottom:6px; }
+  .field label .opt{ color:var(--gray-400); font-weight:500; }
+  .field select, .field input[type=text], .field textarea{
+    width:100%; border:1px solid var(--gray-200); border-radius:10px;
+    padding:11px 12px; font-size:13px; background:var(--white); color:var(--gray-900);
+    font-family:inherit;
+  }
+  .field select:focus, .field input:focus, .field textarea:focus{ outline:2px solid var(--blue-500); outline-offset:-1px; }
+  .field textarea{ resize:vertical; min-height:80px; }
+  .ai-hint-btn{
+    margin-top:6px; display:inline-flex; align-items:center; gap:6px;
+    background:var(--blue-50); color:var(--blue-600); border:none;
+    border-radius:8px; padding:6px 10px; font-size:11px; font-weight:700; cursor:pointer;
+  }
+  .ai-hint-box{
+    margin-top:8px; background:var(--orange-50); border:1px solid #f6d3ab;
+    border-radius:10px; padding:9px 11px; font-size:11.5px; color:#8a4d10; display:none;
+  }
+  .ai-hint-box.show{ display:block; }
+  .photo-upload{
+    border:1.5px dashed var(--gray-200); border-radius:12px; padding:16px;
+    text-align:center; cursor:pointer; color:var(--gray-600); font-size:12px;
+    background:var(--white);
+  }
+  .photo-upload:hover{ border-color:var(--blue-500); color:var(--blue-600); }
+  .photo-preview{ margin-top:10px; display:none; }
+  .photo-preview.show{ display:block; }
+  .photo-preview img{ width:100%; max-height:140px; object-fit:cover; border-radius:10px; }
+  .segmented{ display:flex; border:1px solid var(--gray-200); border-radius:10px; overflow:hidden; }
+  .segmented button{
+    flex:1; border:none; background:var(--white); padding:10px; font-size:12.5px; font-weight:700;
+    color:var(--gray-600); cursor:pointer;
+  }
+  .segmented button.active{ background:var(--blue-600); color:#fff; }
+  .checkbox-row{ display:flex; gap:9px; align-items:flex-start; font-size:12px; color:var(--gray-600); background:var(--white); border:1px solid var(--gray-200); border-radius:10px; padding:10px 12px; }
+  .checkbox-row input{ margin-top:2px; }
+  .field-error{ color:var(--red-600); font-size:11px; margin-top:5px; display:none; }
+  .field-error.show{ display:block; }
+
+  .btn{
+    display:block; width:100%; text-align:center;
+    padding:13px; border-radius:12px; border:none;
+    font-size:14px; font-weight:700; cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-primary{ background:linear-gradient(135deg,var(--blue-600),#1d3f9e); color:#fff; }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-ghost{ background:var(--white); color:var(--navy-800); border:1px solid var(--gray-200); }
+  .btn-row{ display:flex; gap:10px; }
+  .btn-row .btn{ flex:1; }
+
+  /* Preview */
+  .notice-ok{
+    background:var(--green-50); border:1px solid #bfe8cf; color:#146c37;
+    border-radius:12px; padding:11px 13px; font-size:12px; display:flex; gap:8px; align-items:flex-start;
+    margin-bottom:14px;
+  }
+  .preview-list{ background:var(--white); border-radius:14px; border:1px solid var(--gray-200); overflow:hidden; margin-bottom:14px; }
+  .preview-row{ display:flex; justify-content:space-between; gap:10px; padding:11px 14px; border-bottom:1px solid var(--gray-100); font-size:12.5px; }
+  .preview-row:last-child{ border-bottom:none; }
+  .preview-row .k{ color:var(--gray-600); flex:none; width:40%; }
+  .preview-row .v{ font-weight:600; text-align:right; flex:1; }
+  .preview-photo{ width:100%; max-height:150px; object-fit:cover; border-radius:12px; margin-bottom:14px; }
+  .back-note{
+    background:var(--blue-50); color:var(--navy-700); font-size:11.5px; border-radius:10px;
+    padding:9px 12px; margin-bottom:14px;
+  }
+
+  /* Riwayat */
+  .filter-row{ display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px; }
+  .chip{
+    flex:none; padding:7px 12px; border-radius:999px; font-size:11.5px; font-weight:700;
+    background:var(--white); border:1px solid var(--gray-200); color:var(--gray-600); cursor:pointer; white-space:nowrap;
+  }
+  .chip.active{ background:var(--navy-800); color:#fff; border-color:var(--navy-800); }
+  .chip.c-warn.active{ background:var(--red-600); border-color:var(--red-600); }
+  .chip.c-klar.active{ background:var(--orange-600); border-color:var(--orange-600); }
+  .chip.c-proc.active{ background:var(--blue-600); border-color:var(--blue-600); }
+  .chip.c-done.active{ background:var(--green-600); border-color:var(--green-600); }
+
+  .voice-item{
+    background:var(--white); border:1px solid var(--gray-200); border-radius:14px;
+    padding:13px 14px; margin-bottom:10px; cursor:pointer; transition:.15s;
+  }
+  .voice-item:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
+  .voice-item .top-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px; }
+  .voice-item .ttl{ font-size:13.5px; font-weight:700; color:var(--gray-900); }
+  .status-tag{ font-size:10px; font-weight:800; padding:3px 8px; border-radius:999px; flex:none; white-space:nowrap; }
+  .status-tag.s-warn{ background:#fde7e9; color:var(--red-600); }
+  .status-tag.s-klar{ background:var(--orange-50); color:var(--orange-600); }
+  .status-tag.s-proc{ background:var(--blue-50); color:var(--blue-600); }
+  .status-tag.s-done{ background:var(--green-50); color:var(--green-600); }
+  .voice-item .meta{ font-size:11px; color:var(--gray-600); }
+  .voice-item .idline{ font-size:10.5px; color:var(--gray-400); margin-top:4px; }
+  .empty-state{ text-align:center; color:var(--gray-400); font-size:12.5px; padding:40px 10px; }
+
+  /* Detail */
+  .detail-card{ background:var(--white); border:1px solid var(--gray-200); border-radius:16px; padding:16px; margin-bottom:16px; }
+  .detail-card .ttl{ font-size:15px; font-weight:800; margin-bottom:6px; }
+  .detail-card .tags{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+  .pill{ font-size:10.5px; font-weight:700; background:var(--gray-100); color:var(--gray-600); padding:4px 9px; border-radius:999px; }
+  .detail-card .idrow{ font-size:11px; color:var(--gray-400); }
+  .timeline{ position:relative; padding-left:22px; }
+  .tl-item{ position:relative; padding-bottom:20px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-item::before{
+    content:''; position:absolute; left:-17px; top:2px; width:10px; height:10px; border-radius:50%;
+    background:var(--gray-400); border:2px solid var(--white); box-shadow:0 0 0 2px var(--gray-200);
+  }
+  .tl-item.done::before{ background:var(--green-600); box-shadow:0 0 0 2px #bfe8cf; }
+  .tl-item.active::before{ background:var(--blue-600); box-shadow:0 0 0 2px var(--blue-50); }
+  .tl-item::after{
+    content:''; position:absolute; left:-13px; top:12px; bottom:0; width:1.5px; background:var(--gray-200);
+  }
+  .tl-item:last-child::after{ display:none; }
+  .tl-item .tl-title{ font-size:12.5px; font-weight:700; }
+  .tl-item .tl-time{ font-size:10.5px; color:var(--gray-400); margin:1px 0 3px; }
+  .tl-item .tl-note{ font-size:11.5px; color:var(--gray-600); background:var(--gray-100); border-radius:8px; padding:7px 9px; margin-top:4px; }
+
+  .rate-box{ background:var(--white); border:1px solid var(--gray-200); border-radius:16px; padding:16px; margin-top:6px; }
+  .rate-box h4{ margin:0 0 10px; font-size:13.5px; }
+  .stars{ display:flex; gap:6px; margin-bottom:10px; }
+  .stars span{ font-size:26px; cursor:pointer; color:var(--gray-200); transition:.1s; }
+  .stars span.on{ color:#f5b400; }
+  .rate-done{ text-align:center; color:var(--green-600); font-size:12.5px; font-weight:700; padding:6px 0; }
+
+  /* Bottom nav */
+  .bottom-nav{
+    display:flex; background:var(--white); border-top:1px solid var(--gray-200);
+    padding:8px 6px 10px; flex:none;
+  }
+  .nav-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    font-size:10px; color:var(--gray-400); font-weight:700; cursor:pointer; position:relative;
+  }
+  .nav-item.active{ color:var(--blue-600); }
+  .nav-item .nic{ font-size:18px; }
+  .nav-item .nbadge{
+    position:absolute; top:-3px; right:20%; background:var(--red-600); color:#fff;
+    font-size:8px; border-radius:999px; padding:1px 4px; font-weight:800;
+  }
+
+  .toast{
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--gray-900); color:#fff; padding:11px 18px; border-radius:999px;
+    font-size:12.5px; font-weight:600; opacity:0; pointer-events:none; transition:.25s;
+    z-index:999; box-shadow:0 10px 26px rgba(0,0,0,0.25);
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .side-note{
+    width:280px; flex:none;
+    background:var(--white); border-radius:16px; padding:18px;
+    box-shadow:var(--shadow); font-size:12.5px; color:var(--gray-600); line-height:1.55;
+  }
+  .side-note h3{ font-size:13.5px; color:var(--navy-800); margin:0 0 10px; }
+  .side-note .leg{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .leg-dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+  @media (max-width:860px){
+    .side-note{ order:2; width:100%; max-width:360px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="page-head">
+    <h1>🤝 CARE — Member Voice App Prototype</h1>
+    <p>Prototipe interaktif alur member menyampaikan voice &amp; memantau progresnya (myTMMIN → CARE → Voice).</p>
+  </div>
+
+  <div class="stepper" id="stepper"></div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="phone-screen">
+        <div class="status-bar">
+          <span id="clock">9:41</span>
+          <div class="icons"><span>📶</span><span>🔋</span></div>
+        </div>
+        <div class="app-body" id="appBody">
+
+          <!-- 1. myTMMIN -->
+          <div class="screen" id="screen-mytmmin">
+            <div class="brand-strip">
+              <span>Integrity</span><span>Yuusu</span><span>5S</span><span>Overtime</span>
+              <span>Empowerment</span><span>Teamwork</span><span>Best 5 in First</span>
+            </div>
+            <div class="content-scroll">
+              <div class="app-grid">
+                <div class="app-tile"><div class="ic">🕐</div><span>Presensi</span></div>
+                <div class="app-tile"><div class="ic">✈️</div><span>Perjalanan Dinas</span></div>
+                <div class="app-tile"><div class="ic">🏦</div><span>BCA</span></div>
+                <div class="app-tile"><div class="ic">💴</div><span>Slip Gaji</span></div>
+                <div class="app-tile"><div class="ic">💳</div><span>Pinjaman</span></div>
+                <div class="app-tile"><div class="ic">🎁</div><span>Tunjangan</span></div>
+                <div class="app-tile"><div class="ic">📈</div><span>Perkembangan</span></div>
+                <div class="app-tile"><div class="ic">📄</div><span>CPE, COP, Izin COF</span></div>
+                <div class="app-tile"><div class="ic">📋</div><span>Surat Keterangan</span></div>
+                <div class="app-tile"><div class="ic">🔗</div><span>Koneksi Bros</span></div>
+                <div class="app-tile"><div class="ic">📅</div><span>Kalender Event</span></div>
+                <div class="app-tile highlight" data-nav="care-home"><div class="ic">🤝</div><span>CARE</span></div>
+              </div>
+              <div class="helper-banner">💡 Ketuk ikon <b>CARE</b> yang berkedip untuk mulai menyampaikan voice.</div>
+            </div>
+          </div>
+
+          <!-- 2. CARE Home -->
+          <div class="screen" id="screen-care-home">
+            <div class="care-hero">
+              <div class="logo">🤝</div>
+              <h1>CARE</h1>
+              <div class="tagline">Collaborative Action for Real Improvement Together</div>
+              <div class="desc">Satu platform untuk menyampaikan voice, mencatat aktivitas, dan membangun perbaikan bersama.</div>
+            </div>
+            <div class="content-scroll">
+              <div class="menu-card" data-nav="voice-home">
+                <div class="ic voice">💬</div>
+                <div class="txt"><b>Voice</b><small>Sampaikan masukan dan ide perbaikan Anda</small></div>
+                <div class="chev">›</div>
+              </div>
+              <div class="menu-card" data-toast="TFT Logbook belum tersedia di prototipe ini">
+                <div class="ic tft">🧾</div>
+                <div class="txt"><b>TFT Logbook</b><small>Catat aktivitas Time for Team</small></div>
+                <div class="chev">›</div>
+              </div>
+              <div class="menu-card" data-toast="Survey belum tersedia di prototipe ini">
+                <div class="ic survey">📝</div>
+                <div class="txt"><b>Survey</b><small>Isi survey dengan mudah</small></div>
+                <div class="chev">›</div>
+              </div>
+            </div>
+            <div class="bottom-nav">
+              <div class="nav-item active"><div class="nic">🏠</div>Beranda</div>
+              <div class="nav-item"><div class="nic">📊</div>Aktivitas</div>
+              <div class="nav-item"><div class="nic">🔔</div>Notifikasi<span class="nbadge">3</span></div>
+              <div class="nav-item"><div class="nic">👤</div>Profil</div>
+            </div>
+          </div>
+
+          <!-- 3. Voice Home -->
+          <div class="screen" id="screen-voice-home">
+            <div class="app-header">
+              <button class="icon-btn" data-nav="care-home">‹</button>
+              <div class="title-block"><h2>Voice</h2><div class="sub">Sampaikan masukan dan ide Anda</div></div>
+              <button class="icon-btn">🔔<span class="badge">3</span></button>
+            </div>
+            <div class="content-scroll">
+              <div class="action-card primary" data-nav="isi-voice">
+                <div class="ic">✏️</div>
+                <div class="txt"><b>Buat Voice</b><small>Sampaikan voice Anda</small></div>
+                <div class="chev">›</div>
+              </div>
+              <div class="action-card secondary" data-nav="riwayat">
+                <div class="ic">🕓</div>
+                <div class="txt"><b>Riwayat</b><small>Lihat status &amp; update voice</small></div>
+                <div class="chev">›</div>
+              </div>
+
+              <div class="section-label">Ringkasan Voice Saya</div>
+              <div class="stats-grid">
+                <div class="stat-card" data-nav="riwayat" data-filter="semua">
+                  <div class="num" id="stat-total">0</div><div class="lbl">Total Voice</div>
+                </div>
+                <div class="stat-card warn" data-nav="riwayat" data-filter="menunggu">
+                  <div class="num" id="stat-warn">0</div><div class="lbl">Menunggu Respon</div>
+                </div>
+                <div class="stat-card klar" data-nav="riwayat" data-filter="klarifikasi">
+                  <div class="num" id="stat-klar">0</div><div class="lbl">Butuh Klarifikasi</div>
+                </div>
+                <div class="stat-card proc" data-nav="riwayat" data-filter="diproses">
+                  <div class="num" id="stat-proc">0</div><div class="lbl">Diproses</div>
+                </div>
+                <div class="stat-card done" data-nav="riwayat" data-filter="selesai">
+                  <div class="num" id="stat-done">0</div><div class="lbl">Selesai</div>
+                </div>
+              </div>
+            </div>
+            <div class="bottom-nav">
+              <div class="nav-item active"><div class="nic">🏠</div>Beranda</div>
+              <div class="nav-item"><div class="nic">📊</div>Aktivitas</div>
+              <div class="nav-item"><div class="nic">🔔</div>Notifikasi<span class="nbadge">3</span></div>
+              <div class="nav-item"><div class="nic">👤</div>Profil</div>
+            </div>
+          </div>
+
+          <!-- 4. Isi Voice -->
+          <div class="screen" id="screen-isi-voice">
+            <div class="app-header">
+              <button class="icon-btn" data-nav="voice-home">‹</button>
+              <div class="title-block"><h2>Isi Voice</h2><div class="sub">Lengkapi detail voice Anda</div></div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="content-scroll">
+              <div class="field">
+                <label>Area</label>
+                <select id="f-area">
+                  <option value="">Pilih Area</option>
+                  <option>KRW 1</option><option>KRW 2</option><option>KRW 3</option>
+                  <option>STR 1</option><option>STR 2</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Department</label>
+                <select id="f-dept">
+                  <option value="">Pilih Department</option>
+                  <option>Production</option><option>Quality</option><option>Maintenance</option>
+                  <option>Logistic</option><option>Human Resource</option><option>Safety</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Line</label>
+                <select id="f-line">
+                  <option value="">Pilih Line</option>
+                  <option>Line 1</option><option>Line 2</option><option>Line 3</option><option>Line 4</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Detail Lokasi <span class="opt">(opsional)</span></label>
+                <input type="text" id="f-lokasi" placeholder="Contoh: Depan Line 2, Dekat Mesin X">
+                <button class="ai-hint-btn" id="btn-ai-lokasi">🤖 Bantuan AI mengisi lokasi</button>
+                <div class="ai-hint-box" id="ai-hint-box">
+                  Tips AI: sebutkan titik acuan yang jelas (nama mesin/line/pilar), sisi area (kiri/kanan/depan/belakang), dan kondisi sekitar — agar PIC lebih cepat menemukan lokasi.
+                </div>
+              </div>
+              <div class="field">
+                <label>Judul</label>
+                <input type="text" id="f-judul" placeholder="Contoh: Lampu area line 2 redup">
+                <div class="field-error" id="err-judul">Judul wajib diisi.</div>
+              </div>
+              <div class="field">
+                <label>Detail Voice</label>
+                <textarea id="f-detail" placeholder="Jelaskan kondisi/hambatan yang terjadi secara spesifik dan jelas"></textarea>
+                <div class="field-error" id="err-detail">Detail voice wajib diisi.</div>
+              </div>
+              <div class="field">
+                <label>Lampiran Foto <span class="opt">(opsional)</span></label>
+                <label class="photo-upload" id="photo-label">
+                  📷 Tambah Foto — JPG, PNG (Maks. 5 MB)
+                  <input type="file" id="f-photo" accept="image/*" style="display:none">
+                </label>
+                <div class="photo-preview" id="photo-preview"><img id="photo-img" src=""></div>
+              </div>
+              <div class="field">
+                <label>Tampilkan Identitas Saya</label>
+                <div class="segmented" id="seg-identity">
+                  <button class="active" data-val="ya">Ya (Open Identity)</button>
+                  <button data-val="tidak">Tidak (Anonim)</button>
+                </div>
+              </div>
+              <div class="field">
+                <label class="checkbox-row" style="display:flex;">
+                  <input type="checkbox" id="f-agree">
+                  <span>Saya menyatakan bahwa informasi yang saya sampaikan adalah benar / fakta, terutama jika menyangkut pihak lain.</span>
+                </label>
+                <div class="field-error" id="err-agree">Anda perlu menyetujui pernyataan ini.</div>
+              </div>
+              <button class="btn btn-primary" id="btn-selesai-form">Selesai</button>
+            </div>
+          </div>
+
+          <!-- 5. Preview -->
+          <div class="screen" id="screen-preview">
+            <div class="app-header">
+              <button class="icon-btn" data-nav="isi-voice">‹</button>
+              <div class="title-block"><h2>Preview Voice</h2><div class="sub">Periksa kembali sebelum dikirim</div></div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="content-scroll">
+              <div class="notice-ok">✅ Mohon periksa kembali data Anda. Pastikan sudah sesuai sebelum dikirim.</div>
+              <img class="preview-photo" id="preview-photo" style="display:none">
+              <div class="preview-list" id="preview-list"></div>
+              <div class="back-note">ℹ️ Anda masih bisa kembali (Back) untuk merevisi data jika diperlukan.</div>
+              <div class="btn-row">
+                <button class="btn btn-ghost" data-nav="isi-voice">Back</button>
+                <button class="btn btn-primary" id="btn-kirim-voice">📨 Kirim Voice</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Riwayat (list) -->
+          <div class="screen" id="screen-riwayat">
+            <div class="app-header">
+              <button class="icon-btn" data-nav="voice-home">‹</button>
+              <div class="title-block"><h2>Riwayat Voice</h2><div class="sub">Pantau progres voice Anda</div></div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="content-scroll">
+              <div class="filter-row" id="filter-row">
+                <div class="chip active" data-filter="semua">Semua</div>
+                <div class="chip c-warn" data-filter="menunggu">Menunggu Respon</div>
+                <div class="chip c-klar" data-filter="klarifikasi">Butuh Klarifikasi</div>
+                <div class="chip c-proc" data-filter="diproses">Diproses</div>
+                <div class="chip c-done" data-filter="selesai">Selesai</div>
+              </div>
+              <div id="voice-list"></div>
+            </div>
+          </div>
+
+          <!-- 7. Detail / Tracking -->
+          <div class="screen" id="screen-detail">
+            <div class="app-header">
+              <button class="icon-btn" data-nav="riwayat">‹</button>
+              <div class="title-block"><h2>Tracking Voice</h2><div class="sub">Detail &amp; progres voice</div></div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="content-scroll" id="detail-content"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="side-note">
+      <h3>Legenda status</h3>
+      <div class="leg"><div class="leg-dot" style="background:#e0263d"></div>Menunggu Respon — belum ditanggapi PIC</div>
+      <div class="leg"><div class="leg-dot" style="background:#f5821f"></div>Butuh Klarifikasi — PIC minta info tambahan</div>
+      <div class="leg"><div class="leg-dot" style="background:#2b57c9"></div>Diproses — sedang ditindaklanjuti PIC</div>
+      <div class="leg"><div class="leg-dot" style="background:#1f9d55"></div>Selesai — tindak lanjut tuntas, menunggu rating</div>
+      <h3 style="margin-top:16px;">Auto-routing kategori</h3>
+      <div class="leg">🧑‍💼 Kesulitan Kerja → Manager Area</div>
+      <div class="leg">🏬 Fasilitas Shop → Manager Area</div>
+      <div class="leg">🏭 Fasilitas Plant → PAD</div>
+      <div class="leg">🔒 Private → Committee</div>
+      <p style="margin-top:12px;">Ini adalah prototipe front-end statis (data tersimpan di memori browser). AI classification &amp; auto-routing disimulasikan dengan aturan kata kunci sederhana untuk mendemokan alur.</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STEPS = [
+    {key:"mytmmin", num:1, label:"CARE di myTMMIN"},
+    {key:"care-home", num:2, label:"Beranda CARE"},
+    {key:"voice-home", num:3, label:"Beranda Voice"},
+    {key:"isi-voice", num:4, label:"Isi Voice"},
+    {key:"preview", num:5, label:"Preview & Kirim"},
+    {key:"riwayat", num:6, label:"Tracking Progress"}
+  ];
+
+  var STATUS = {
+    menunggu:{label:"Menunggu Respon", cls:"s-warn"},
+    klarifikasi:{label:"Butuh Klarifikasi", cls:"s-klar"},
+    diproses:{label:"Diproses", cls:"s-proc"},
+    selesai:{label:"Selesai", cls:"s-done"}
+  };
+
+  var seq = 5;
+  var voices = [
+    mk("VO-2025-0001","Toilet shop lantai 2 bocor","Air menggenang di depan toilet shop lantai 2, licin dan berbahaya.","KRW 1","Maintenance","Line 1","selesai","Fasilitas Shop","2025-05-02T08:10:00", true),
+    mk("VO-2025-0002","Jadwal lembur mendadak tanpa info","Info lembur baru diberikan H-1, sulit atur jadwal pribadi.","KRW 2","Production","Line 3","diproses","Kesulitan Kerja","2025-05-04T09:20:00", false),
+    mk("VO-2025-0003","AC ruang istirahat mati","AC di ruang istirahat plant tidak dingin sejak minggu lalu.","STR 1","Facility","Line 2","diproses","Fasilitas Plant","2025-05-05T13:00:00", true),
+    mk("VO-2025-0004","Rekan kerja sering intimidasi","Ada rekan kerja yang bersikap intimidatif ke anggota tim lain.","KRW 3","Human Resource","Line 4","klarifikasi","Private","2025-05-06T15:40:00", false),
+    mk("VO-2025-0005","Lampu area line 2 redup","Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.","KRW 1","Maintenance","Line 2","diproses","Fasilitas Plant","2025-05-12T09:15:00", true)
+  ];
+  voices[0].rating = 5;
+
+  function mk(id, judul, detail, area, dept, line, status, kategori, createdAt, identity){
+    var created = new Date(createdAt);
+    var tl = [{ title:"Voice dikirim ("+(identity?"Open Identity":"Anonim")+")", who:"Oleh Anda", time:created, done:true }];
+    if(status!=="menunggu"){
+      tl.push({ title:"Diterima oleh PIC", who:"PIC: "+picFor(kategori), time:addHrs(created,1), done:true });
+    }
+    if(status==="klarifikasi"){
+      tl.push({ title:"PIC meminta klarifikasi", who:"PIC: "+picFor(kategori), time:addHrs(created,3), done:true, note:"Mohon lampirkan info/foto tambahan terkait lokasi kejadian." });
+    }
+    if(status==="diproses"||status==="selesai"){
+      tl.push({ title:"Diproses oleh PIC", who:"PIC: "+picFor(kategori), time:addHrs(created,4), done:true });
+    }
+    if(status==="selesai"){
+      tl.push({ title:"Selesai", who:"Tindak lanjut selesai", time:addHrs(created,26), done:true });
+    }
+    return {
+      id, judul, detail, area, dept, line, status, kategori,
+      severity: severityFor(judul+" "+detail),
+      identity: identity, lokasi:"", photo:null,
+      created, timeline: tl, rating:0, feedback:""
+    };
+  }
+  function addHrs(d,h){ var n=new Date(d); n.setHours(n.getHours()+h); return n; }
+  function picFor(kategori){
+    if(kategori==="Kesulitan Kerja") return "Andi (Manager Area)";
+    if(kategori==="Fasilitas Shop") return "Sari (Manager Area)";
+    if(kategori==="Fasilitas Plant") return "Andi (PAD)";
+    if(kategori==="Private") return "Tim Committee";
+    return "PIC Terkait";
+  }
+  function severityFor(text){
+    text = text.toLowerCase();
+    if(/bahaya|celaka|rusak parah|urgent|bocor|intimidasi|pelecehan/.test(text)) return "Tinggi";
+    if(/rusak|tidak berfungsi|mati|redup|bocor kecil/.test(text)) return "Sedang";
+    return "Rendah";
+  }
+  function classify(text){
+    text = text.toLowerCase();
+    if(/intimidasi|pelecehan|bully|pribadi|personal|ancam/.test(text)) return "Private";
+    if(/toilet|kantin|locker|loker|shop|musholla|ruang istirahat/.test(text)) return "Fasilitas Shop";
+    if(/gaji|lembur|shift|atasan|beban kerja|jam kerja|training/.test(text)) return "Kesulitan Kerja";
+    return "Fasilitas Plant";
+  }
+
+  function fmtDate(d){
+    var months=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"];
+    var hh = d.getHours().toString().padStart(2,"0");
+    var mm = d.getMinutes().toString().padStart(2,"0");
+    return d.getDate()+" "+months[d.getMonth()]+" "+d.getFullYear()+" "+hh+":"+mm;
+  }
+
+  var state = { screen:"mytmmin", history:[], filter:"semua", currentId:null, draft:null };
+
+  var stepperEl = document.getElementById("stepper");
+  STEPS.forEach(function(s){
+    var b = document.createElement("div");
+    b.className = "step-btn";
+    b.dataset.step = s.key;
+    b.innerHTML = '<span class="num">'+s.num+'</span><span>'+s.label+'</span>';
+    b.addEventListener("click", function(){
+      if(s.key==="preview" && !state.draft){ ensureDraft(); }
+      goTo(s.key);
+    });
+    stepperEl.appendChild(b);
+  });
+
+  function ensureDraft(){
+    state.draft = {
+      area:"KRW 1", dept:"Maintenance", line:"Line 2", lokasi:"Depan Line 2, Dekat Mesin X",
+      judul:"Lampu area line 2 redup",
+      detail:"Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.",
+      photo:null, identity:"ya"
+    };
+  }
+
+  function updateStepper(screen){
+    var map = { "mytmmin":"mytmmin","care-home":"care-home","voice-home":"voice-home",
+      "isi-voice":"isi-voice","preview":"preview","riwayat":"riwayat","detail":"riwayat" };
+    var active = map[screen] || "mytmmin";
+    document.querySelectorAll(".step-btn").forEach(function(b){
+      b.classList.toggle("active", b.dataset.step === active);
+    });
+  }
+
+  function goTo(screen, opts){
+    opts = opts || {};
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+    var el = document.getElementById("screen-"+screen);
+    if(el) el.classList.add("active");
+    state.screen = screen;
+    updateStepper(screen);
+    document.getElementById("appBody").scrollTop = 0;
+
+    if(screen === "riwayat"){
+      if(opts.filter) state.filter = opts.filter;
+      renderFilters();
+      renderList();
+    }
+    if(screen === "voice-home"){ renderStats(); }
+    if(screen === "detail" && state.currentId){ renderDetail(state.currentId); }
+    if(screen === "preview"){ renderPreview(); }
+    if(screen === "isi-voice" && !opts.keep){ resetForm(); }
+  }
+
+  document.body.addEventListener("click", function(e){
+    var navEl = e.target.closest("[data-nav]");
+    if(navEl){
+      var filter = navEl.dataset.filter;
+      goTo(navEl.dataset.nav, filter ? {filter:filter} : {});
+      return;
+    }
+    var toastEl = e.target.closest("[data-toast]");
+    if(toastEl){ showToast(toastEl.dataset.toast); return; }
+  });
+
+  function showToast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+
+  /* ---- Form (Isi Voice) ---- */
+  var identityVal = "ya";
+  var photoData = null;
+
+  document.getElementById("seg-identity").addEventListener("click", function(e){
+    var btn = e.target.closest("button");
+    if(!btn) return;
+    document.querySelectorAll("#seg-identity button").forEach(function(b){ b.classList.remove("active"); });
+    btn.classList.add("active");
+    identityVal = btn.dataset.val;
+  });
+
+  document.getElementById("btn-ai-lokasi").addEventListener("click", function(){
+    document.getElementById("ai-hint-box").classList.toggle("show");
+  });
+
+  document.getElementById("f-photo").addEventListener("change", function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      photoData = ev.target.result;
+      document.getElementById("photo-img").src = photoData;
+      document.getElementById("photo-preview").classList.add("show");
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function resetForm(){
+    document.getElementById("f-area").value = "";
+    document.getElementById("f-dept").value = "";
+    document.getElementById("f-line").value = "";
+    document.getElementById("f-lokasi").value = "";
+    document.getElementById("f-judul").value = "";
+    document.getElementById("f-detail").value = "";
+    document.getElementById("f-agree").checked = false;
+    document.getElementById("ai-hint-box").classList.remove("show");
+    document.getElementById("photo-preview").classList.remove("show");
+    document.querySelectorAll(".field-error").forEach(function(el){ el.classList.remove("show"); });
+    photoData = null;
+    identityVal = "ya";
+    document.querySelectorAll("#seg-identity button").forEach(function(b){ b.classList.toggle("active", b.dataset.val==="ya"); });
+  }
+
+  document.getElementById("btn-selesai-form").addEventListener("click", function(){
+    var area = document.getElementById("f-area").value;
+    var dept = document.getElementById("f-dept").value;
+    var line = document.getElementById("f-line").value;
+    var lokasi = document.getElementById("f-lokasi").value.trim();
+    var judul = document.getElementById("f-judul").value.trim();
+    var detail = document.getElementById("f-detail").value.trim();
+    var agree = document.getElementById("f-agree").checked;
+
+    var ok = true;
+    document.getElementById("err-judul").classList.toggle("show", !judul); if(!judul) ok=false;
+    document.getElementById("err-detail").classList.toggle("show", !detail); if(!detail) ok=false;
+    document.getElementById("err-agree").classList.toggle("show", !agree); if(!agree) ok=false;
+    if(!area || !dept || !line){ showToast("Lengkapi Area, Department, dan Line."); ok=false; }
+    if(!ok) return;
+
+    state.draft = { area, dept, line, lokasi, judul, detail, photo: photoData, identity: identityVal };
+    goTo("preview");
+  });
+
+  function renderPreview(){
+    var d = state.draft;
+    if(!d) return;
+    var box = document.getElementById("preview-list");
+    box.innerHTML = [
+      row("Area", d.area), row("Department", d.dept), row("Line", d.line),
+      row("Detail Lokasi", d.lokasi || "—"),
+      row("Judul", d.judul), row("Detail Voice", d.detail),
+      row("Identitas", d.identity==="ya" ? "Open Identity" : "Anonim")
+    ].join("");
+    var img = document.getElementById("preview-photo");
+    if(d.photo){ img.src = d.photo; img.style.display="block"; } else { img.style.display="none"; }
+  }
+  function row(k,v){
+    return '<div class="preview-row"><div class="k">'+k+'</div><div class="v">'+escapeHtml(v)+'</div></div>';
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; });
+  }
+
+  document.getElementById("btn-kirim-voice").addEventListener("click", function(){
+    var d = state.draft;
+    if(!d) return;
+    seq += 1;
+    var idNum = String(seq).padStart(4,"0");
+    var kategori = classify(d.judul+" "+d.detail);
+    var now = new Date();
+    var v = {
+      id: "VO-2025-"+idNum,
+      judul: d.judul, detail: d.detail, area: d.area, dept: d.dept, line: d.line,
+      status: "menunggu", kategori: kategori, severity: severityFor(d.judul+" "+d.detail),
+      identity: d.identity==="ya", lokasi: d.lokasi, photo: d.photo,
+      created: now,
+      timeline: [{ title:"Voice dikirim ("+(d.identity==="ya"?"Open Identity":"Anonim")+")", who:"Oleh Anda", time: now, done:true }],
+      rating:0, feedback:""
+    };
+    voices.unshift(v);
+    state.draft = null;
+    state.currentId = v.id;
+    showToast("✅ Voice berhasil dikirim! ID "+v.id);
+    goTo("detail");
+  });
+
+  /* ---- Riwayat list ---- */
+  function renderFilters(){
+    document.querySelectorAll("#filter-row .chip").forEach(function(c){
+      c.classList.toggle("active", c.dataset.filter === state.filter);
+    });
+  }
+  document.getElementById("filter-row").addEventListener("click", function(e){
+    var chip = e.target.closest(".chip");
+    if(!chip) return;
+    state.filter = chip.dataset.filter;
+    renderFilters();
+    renderList();
+  });
+
+  function filteredVoices(){
+    if(state.filter==="semua") return voices;
+    return voices.filter(function(v){ return v.status === state.filter; });
+  }
+
+  function renderList(){
+    var list = document.getElementById("voice-list");
+    var items = filteredVoices();
+    if(items.length===0){
+      list.innerHTML = '<div class="empty-state">Belum ada voice pada kategori ini.</div>';
+      return;
+    }
+    list.innerHTML = items.map(function(v){
+      var st = STATUS[v.status];
+      return '<div class="voice-item" data-id="'+v.id+'">'+
+        '<div class="top-row"><div class="ttl">'+escapeHtml(v.judul)+'</div>'+
+        '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
+        '<div class="meta">'+escapeHtml(v.area)+' • '+escapeHtml(v.dept)+' • '+escapeHtml(v.line)+'</div>'+
+        '<div class="idline">ID: '+v.id+' &middot; '+fmtDate(v.created)+'</div>'+
+      '</div>';
+    }).join("");
+    list.querySelectorAll(".voice-item").forEach(function(el){
+      el.addEventListener("click", function(){
+        state.currentId = el.dataset.id;
+        goTo("detail");
+      });
+    });
+  }
+
+  function renderStats(){
+    document.getElementById("stat-total").textContent = voices.length;
+    document.getElementById("stat-warn").textContent = voices.filter(function(v){return v.status==="menunggu";}).length;
+    document.getElementById("stat-klar").textContent = voices.filter(function(v){return v.status==="klarifikasi";}).length;
+    document.getElementById("stat-proc").textContent = voices.filter(function(v){return v.status==="diproses";}).length;
+    document.getElementById("stat-done").textContent = voices.filter(function(v){return v.status==="selesai";}).length;
+  }
+
+  /* ---- Detail / Tracking ---- */
+  function findVoice(id){ return voices.find(function(v){ return v.id===id; }); }
+
+  function renderDetail(id){
+    var v = findVoice(id);
+    var box = document.getElementById("detail-content");
+    if(!v){ box.innerHTML = '<div class="empty-state">Voice tidak ditemukan.</div>'; return; }
+    var st = STATUS[v.status];
+
+    var tlHtml = v.timeline.map(function(t,i){
+      var isLast = i === v.timeline.length-1;
+      var cls = t.done ? (isLast ? "active" : "done") : "";
+      return '<div class="tl-item '+cls+'">'+
+        '<div class="tl-title">'+escapeHtml(t.title)+'</div>'+
+        '<div class="tl-time">'+fmtDate(t.time)+' &middot; '+escapeHtml(t.who)+'</div>'+
+        (t.note ? '<div class="tl-note">'+escapeHtml(t.note)+'</div>' : '') +
+      '</div>';
+    }).join("");
+
+    var photoHtml = v.photo ? '<img class="preview-photo" src="'+v.photo+'">' : '';
+
+    var rateHtml = "";
+    if(v.status === "selesai"){
+      if(v.rating > 0){
+        rateHtml = '<div class="rate-box"><h4>Rating Anda</h4>'+
+          '<div class="stars">'+[1,2,3,4,5].map(function(n){return '<span class="'+(n<=v.rating?"on":"")+'">★</span>';}).join("")+'</div>'+
+          (v.feedback ? '<div class="tl-note">'+escapeHtml(v.feedback)+'</div>' : '') +
+          '<div class="rate-done">✓ Terima kasih atas feedback Anda</div></div>';
+      } else {
+        rateHtml = '<div class="rate-box"><h4>Berikan rating &amp; feedback</h4>'+
+          '<div class="stars" id="rate-stars">'+[1,2,3,4,5].map(function(n){return '<span data-n="'+n+'">★</span>';}).join("")+'</div>'+
+          '<textarea id="rate-feedback" placeholder="Ceritakan pengalaman Anda (wajib untuk rating 1-3, opsional untuk 4-5)" style="width:100%;border:1px solid var(--gray-200);border-radius:10px;padding:10px;font-size:12.5px;min-height:70px;font-family:inherit;"></textarea>'+
+          '<div class="field-error" id="err-rate">Mohon isi feedback untuk rating 1-3.</div>'+
+          '<button class="btn btn-primary" id="btn-submit-rate" style="margin-top:10px;">Kirim Rating</button></div>';
+      }
+    }
+
+    box.innerHTML =
+      '<div class="detail-card">'+
+        '<div class="tags"><div class="pill">'+escapeHtml(v.kategori)+'</div><div class="pill">Severity: '+escapeHtml(v.severity)+'</div>'+
+        '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
+        '<div class="ttl">'+escapeHtml(v.judul)+'</div>'+
+        '<div class="idrow">ID: '+v.id+' &middot; '+escapeHtml(v.area)+' • '+escapeHtml(v.dept)+' • '+escapeHtml(v.line)+'</div>'+
+        (v.lokasi ? '<div class="idrow" style="margin-top:4px;">📍 '+escapeHtml(v.lokasi)+'</div>' : '') +
+        '<div class="idrow" style="margin-top:4px;">👤 '+(v.identity ? "Open Identity" : "Anonim")+'</div>'+
+        (photoHtml ? '<div style="margin-top:10px;">'+photoHtml+'</div>' : '') +
+        '<div style="margin-top:10px;font-size:12.5px;color:var(--gray-600);">'+escapeHtml(v.detail)+'</div>'+
+      '</div>'+
+      '<div class="detail-card"><div class="timeline">'+tlHtml+'</div></div>'+
+      rateHtml;
+
+    if(v.status === "selesai" && v.rating === 0){
+      var chosen = 0;
+      var starsEl = document.getElementById("rate-stars");
+      starsEl.addEventListener("click", function(e){
+        var s = e.target.closest("span");
+        if(!s) return;
+        chosen = parseInt(s.dataset.n,10);
+        starsEl.querySelectorAll("span").forEach(function(sp){
+          sp.classList.toggle("on", parseInt(sp.dataset.n,10) <= chosen);
+        });
+      });
+      document.getElementById("btn-submit-rate").addEventListener("click", function(){
+        if(chosen === 0){ showToast("Pilih rating bintang terlebih dahulu."); return; }
+        var fb = document.getElementById("rate-feedback").value.trim();
+        if(chosen <= 3 && !fb){
+          document.getElementById("err-rate").classList.add("show");
+          return;
+        }
+        v.rating = chosen;
+        v.feedback = fb;
+        showToast("Terima kasih atas rating Anda!");
+        renderDetail(v.id);
+      });
+    }
+  }
+
+  /* clock */
+  function tickClock(){
+    var d = new Date();
+    document.getElementById("clock").textContent =
+      d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0");
+  }
+  tickClock();
+  setInterval(tickClock, 30000);
+
+  goTo("mytmmin");
+})();
+</script>
+</body>
+</html>
