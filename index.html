@@ -325,6 +325,9 @@
     border-radius:10px; padding:9px 11px; font-size:11.5px; color:#8a4d10; display:none;
   }
   .ai-hint-box.show{ display:block; }
+  .ai-hint-box.ok{ background:var(--green-50); border-color:#bfe8cf; color:#146c37; }
+  .ai-hint-box ul{ margin:6px 0 0; padding-left:16px; }
+  .field label .req{ color:var(--red-600); font-weight:700; }
   .photo-upload{
     border:1.5px dashed var(--gray-200); border-radius:12px; padding:16px;
     text-align:center; cursor:pointer; color:var(--gray-600); font-size:12px;
@@ -518,7 +521,7 @@
             <div class="care-hero">
               <div class="logo">🤝</div>
               <h1>CARE</h1>
-              <div class="tagline">Collaborative Action for Real Improvement Together</div>
+              <div class="tagline">Connect &middot; Appreciate &middot; Respond &middot; Elevate</div>
               <div class="desc">Satu platform untuk menyampaikan voice, mencatat aktivitas, dan membangun perbaikan bersama.</div>
             </div>
             <div class="content-scroll">
@@ -609,59 +612,25 @@
                 </select>
               </div>
               <div class="field">
-                <label>Department</label>
-                <select id="f-dept">
-                  <option value="">Pilih Department</option>
-                  <option>Production</option><option>Quality</option><option>Maintenance</option>
-                  <option>Logistic</option><option>Human Resource</option><option>Safety</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Line</label>
-                <select id="f-line">
-                  <option value="">Pilih Line</option>
-                  <option>Line 1</option><option>Line 2</option><option>Line 3</option><option>Line 4</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Detail Lokasi <span class="opt">(opsional)</span></label>
+                <label>Detail Lokasi</label>
                 <input type="text" id="f-lokasi" placeholder="Contoh: Depan Line 2, Dekat Mesin X">
-                <button class="ai-hint-btn" id="btn-ai-lokasi">🤖 Bantuan AI mengisi lokasi</button>
-                <div class="ai-hint-box" id="ai-hint-box">
-                  Tips AI: sebutkan titik acuan yang jelas (nama mesin/line/pilar), sisi area (kiri/kanan/depan/belakang), dan kondisi sekitar — agar PIC lebih cepat menemukan lokasi.
-                </div>
-              </div>
-              <div class="field">
-                <label>Judul</label>
-                <input type="text" id="f-judul" placeholder="Contoh: Lampu area line 2 redup">
-                <div class="field-error" id="err-judul">Judul wajib diisi.</div>
+                <button class="ai-hint-btn" id="btn-ai-lokasi">🤖 Cek kelengkapan lokasi (AI)</button>
+                <div class="ai-hint-box" id="ai-hint-box"></div>
+                <div class="field-error" id="err-lokasi">Detail lokasi wajib diisi.</div>
               </div>
               <div class="field">
                 <label>Detail Voice</label>
-                <textarea id="f-detail" placeholder="Jelaskan kondisi/hambatan yang terjadi secara spesifik dan jelas"></textarea>
+                <textarea id="f-detail" placeholder="Jelaskan kondisi/hambatan yang terjadi secara spesifik dan jelas. Judul voice akan dibuat otomatis dari detail ini."></textarea>
                 <div class="field-error" id="err-detail">Detail voice wajib diisi.</div>
               </div>
               <div class="field">
-                <label>Lampiran Foto <span class="opt">(opsional)</span></label>
+                <label>Bukti Foto <span class="req">*wajib</span></label>
                 <label class="photo-upload" id="photo-label">
                   📷 Tambah Foto — JPG, PNG (Maks. 5 MB)
                   <input type="file" id="f-photo" accept="image/*" style="display:none">
                 </label>
                 <div class="photo-preview" id="photo-preview"><img id="photo-img" src=""></div>
-              </div>
-              <div class="field">
-                <label>Tampilkan Identitas Saya</label>
-                <div class="segmented" id="seg-identity">
-                  <button class="active" data-val="ya">Ya (Open Identity)</button>
-                  <button data-val="tidak">Tidak (Anonim)</button>
-                </div>
-              </div>
-              <div class="field">
-                <label class="checkbox-row" style="display:flex;">
-                  <input type="checkbox" id="f-agree">
-                  <span>Saya menyatakan bahwa informasi yang saya sampaikan adalah benar / fakta, terutama jika menyangkut pihak lain.</span>
-                </label>
-                <div class="field-error" id="err-agree">Anda perlu menyetujui pernyataan ini.</div>
+                <div class="field-error" id="err-photo">Bukti foto wajib dilampirkan.</div>
               </div>
               <button class="btn btn-primary" id="btn-selesai-form">Selesai</button>
             </div>
@@ -678,6 +647,20 @@
               <div class="notice-ok">✅ Mohon periksa kembali data Anda. Pastikan sudah sesuai sebelum dikirim.</div>
               <img class="preview-photo" id="preview-photo" style="display:none">
               <div class="preview-list" id="preview-list"></div>
+              <div class="field" id="preview-identity-field">
+                <label>Tampilkan Identitas Saya</label>
+                <div class="segmented" id="seg-identity">
+                  <button data-val="ya">Ya (Open Identity)</button>
+                  <button data-val="tidak">Tidak (Anonim)</button>
+                </div>
+              </div>
+              <div class="field" id="preview-agree-field" style="display:none;">
+                <label class="checkbox-row" style="display:flex;">
+                  <input type="checkbox" id="f-agree">
+                  <span>Saya menyatakan bahwa informasi yang saya sampaikan adalah benar / fakta, terutama jika menyangkut pihak lain.</span>
+                </label>
+                <div class="field-error" id="err-agree">Anda perlu menyetujui pernyataan ini.</div>
+              </div>
               <div class="back-note">ℹ️ Anda masih bisa kembali (Back) untuk merevisi data jika diperlukan.</div>
               <div class="btn-row">
                 <button class="btn btn-ghost" data-nav="isi-voice">Back</button>
@@ -730,7 +713,12 @@
       <div class="leg">🏬 Fasilitas Shop → Manager Area</div>
       <div class="leg">🏭 Fasilitas Plant → PAD</div>
       <div class="leg">🔒 Private → Committee</div>
-      <p style="margin-top:12px;">Ini adalah prototipe front-end statis (data tersimpan di memori browser). AI classification &amp; auto-routing disimulasikan dengan aturan kata kunci sederhana untuk mendemokan alur.</p>
+      <h3 style="margin-top:16px;">Isi Voice disederhanakan</h3>
+      <div class="leg">📍 Detail Lokasi wajib &amp; dicek kelengkapannya oleh AI</div>
+      <div class="leg">📝 Judul dibuat otomatis dari Detail Voice</div>
+      <div class="leg">📸 Bukti Foto wajib diunggah</div>
+      <div class="leg">👤 Identitas &amp; pernyataan fakta baru ditanyakan di Preview, setelah kategori terdeteksi</div>
+      <p style="margin-top:12px;">Ini adalah prototipe front-end statis (data tersimpan di memori browser). AI classification, deteksi kelengkapan lokasi, &amp; judul otomatis disimulasikan dengan aturan kata kunci sederhana untuk mendemokan alur.</p>
     </div>
   </div>
 
@@ -758,15 +746,18 @@
 
   var seq = 5;
   var voices = [
-    mk("VO-2025-0001","Toilet shop lantai 2 bocor","Air menggenang di depan toilet shop lantai 2, licin dan berbahaya.","KRW 1","Maintenance","Line 1","selesai","Fasilitas Shop","2025-05-02T08:10:00", true),
-    mk("VO-2025-0002","Jadwal lembur mendadak tanpa info","Info lembur baru diberikan H-1, sulit atur jadwal pribadi.","KRW 2","Production","Line 3","diproses","Kesulitan Kerja","2025-05-04T09:20:00", false),
-    mk("VO-2025-0003","AC ruang istirahat mati","AC di ruang istirahat plant tidak dingin sejak minggu lalu.","STR 1","Facility","Line 2","diproses","Fasilitas Plant","2025-05-05T13:00:00", true),
-    mk("VO-2025-0004","Rekan kerja sering intimidasi","Ada rekan kerja yang bersikap intimidatif ke anggota tim lain.","KRW 3","Human Resource","Line 4","klarifikasi","Private","2025-05-06T15:40:00", false),
-    mk("VO-2025-0005","Lampu area line 2 redup","Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.","KRW 1","Maintenance","Line 2","diproses","Fasilitas Plant","2025-05-12T09:15:00", true)
+    mk("VO-2025-0001","Toilet shop lantai 2 bocor","Air menggenang di depan toilet shop lantai 2, licin dan berbahaya.","KRW 1","selesai","Fasilitas Shop","2025-05-02T08:10:00", true),
+    mk("VO-2025-0002","Jadwal lembur mendadak tanpa info","Info lembur baru diberikan H-1, sulit atur jadwal pribadi.","KRW 2","diproses","Kesulitan Kerja","2025-05-04T09:20:00", false),
+    mk("VO-2025-0003","AC ruang istirahat mati","AC di ruang istirahat plant tidak dingin sejak minggu lalu.","STR 1","diproses","Fasilitas Plant","2025-05-05T13:00:00", true),
+    mk("VO-2025-0004","Rekan kerja sering intimidasi","Ada rekan kerja yang bersikap intimidatif ke anggota tim lain.","KRW 3","klarifikasi","Private","2025-05-06T15:40:00", false),
+    mk("VO-2025-0005","Lampu area line 2 redup","Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.","KRW 1","diproses","Fasilitas Plant","2025-05-12T09:15:00", true)
   ];
   voices[0].rating = 5;
+  voices[4].lokasi = "Depan Line 2, Dekat Mesin X";
 
-  function mk(id, judul, detail, area, dept, line, status, kategori, createdAt, identity){
+  var PLACEHOLDER_PHOTO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='240'%3E%3Crect width='100%25' height='100%25' fill='%23e4e7ee'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%235b6172' text-anchor='middle' dominant-baseline='middle'%3EContoh Foto%3C/text%3E%3C/svg%3E";
+
+  function mk(id, judul, detail, area, status, kategori, createdAt, identity){
     var created = new Date(createdAt);
     var tl = [{ title:"Voice dikirim ("+(identity?"Open Identity":"Anonim")+")", who:"Oleh Anda", time:created, done:true }];
     if(status!=="menunggu"){
@@ -782,7 +773,7 @@
       tl.push({ title:"Selesai", who:"Tindak lanjut selesai", time:addHrs(created,26), done:true });
     }
     return {
-      id, judul, detail, area, dept, line, status, kategori,
+      id, judul, detail, area, status, kategori,
       severity: severityFor(judul+" "+detail),
       identity: identity, lokasi:"", photo:null,
       created, timeline: tl, rating:0, feedback:""
@@ -809,6 +800,30 @@
     if(/gaji|lembur|shift|atasan|beban kerja|jam kerja|training/.test(text)) return "Kesulitan Kerja";
     return "Fasilitas Plant";
   }
+  function generateTitle(detail){
+    var text = (detail||"").trim().replace(/\s+/g," ");
+    if(!text) return "";
+    var clause = text.split(/[.!?]/)[0];
+    var words = clause.split(" ");
+    var title = words.length > 9 ? words.slice(0,9).join(" ")+"…" : clause;
+    return title.charAt(0).toUpperCase() + title.slice(1);
+  }
+  function locationCheck(text){
+    text = (text||"").trim();
+    var issues = [];
+    if(text.length < 8){
+      issues.push("Detail lokasi terlalu singkat, tambahkan informasi lebih spesifik.");
+    }
+    var hasLandmark = /line\s?\d|mesin|pilar|kolom|rak|rack|panel|pintu|gate|tiang|dinding|tangga|meja|loket|area\s?\d|krw|str/i.test(text);
+    var hasDirection = /depan|belakang|samping|sebelah|dekat|atas|bawah|kiri|kanan|antara/i.test(text);
+    if(!hasLandmark){
+      issues.push("Sebutkan titik acuan yang jelas, contoh: dekat mesin X, dekat Line 2, atau dekat pilar A3.");
+    }
+    if(!hasDirection){
+      issues.push("Sebutkan posisi relatif seperti depan/belakang/samping/dekat agar PIC mudah menemukan lokasi.");
+    }
+    return { ok: issues.length===0, issues: issues };
+  }
 
   function fmtDate(d){
     var months=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"];
@@ -833,11 +848,13 @@
   });
 
   function ensureDraft(){
+    var detail = "Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.";
+    var kategori = classify(detail);
     state.draft = {
-      area:"KRW 1", dept:"Maintenance", line:"Line 2", lokasi:"Depan Line 2, Dekat Mesin X",
-      judul:"Lampu area line 2 redup",
-      detail:"Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.",
-      photo:null, identity:"ya"
+      area:"KRW 1", lokasi:"Depan Line 2, Dekat Mesin X",
+      detail: detail, judul: generateTitle(detail), photo: PLACEHOLDER_PHOTO,
+      kategori: kategori, severity: severityFor(detail),
+      identity: kategori === "Private" ? "tidak" : "ya", agree:false
     };
   }
 
@@ -890,7 +907,6 @@
   }
 
   /* ---- Form (Isi Voice) ---- */
-  var identityVal = "ya";
   var photoData = null;
 
   document.getElementById("seg-identity").addEventListener("click", function(e){
@@ -898,11 +914,32 @@
     if(!btn) return;
     document.querySelectorAll("#seg-identity button").forEach(function(b){ b.classList.remove("active"); });
     btn.classList.add("active");
-    identityVal = btn.dataset.val;
+    if(state.draft) state.draft.identity = btn.dataset.val;
   });
 
+  document.getElementById("f-agree").addEventListener("change", function(e){
+    if(state.draft) state.draft.agree = e.target.checked;
+    document.getElementById("err-agree").classList.remove("show");
+  });
+
+  function renderLocationCheck(check){
+    var box = document.getElementById("ai-hint-box");
+    if(check.ok){
+      box.className = "ai-hint-box show ok";
+      box.innerHTML = "✅ AI: lokasi sudah cukup detail.";
+    } else {
+      box.className = "ai-hint-box show";
+      box.innerHTML = "⚠️ AI mendeteksi lokasi kurang lengkap:<ul>"+
+        check.issues.map(function(i){ return "<li>"+escapeHtml(i)+"</li>"; }).join("")+"</ul>";
+    }
+  }
+
   document.getElementById("btn-ai-lokasi").addEventListener("click", function(){
-    document.getElementById("ai-hint-box").classList.toggle("show");
+    renderLocationCheck(locationCheck(document.getElementById("f-lokasi").value.trim()));
+  });
+  document.getElementById("f-lokasi").addEventListener("blur", function(){
+    var v = this.value.trim();
+    if(v) renderLocationCheck(locationCheck(v));
   });
 
   document.getElementById("f-photo").addEventListener("change", function(e){
@@ -919,37 +956,40 @@
 
   function resetForm(){
     document.getElementById("f-area").value = "";
-    document.getElementById("f-dept").value = "";
-    document.getElementById("f-line").value = "";
     document.getElementById("f-lokasi").value = "";
-    document.getElementById("f-judul").value = "";
     document.getElementById("f-detail").value = "";
-    document.getElementById("f-agree").checked = false;
-    document.getElementById("ai-hint-box").classList.remove("show");
+    document.getElementById("ai-hint-box").classList.remove("show","ok");
+    document.getElementById("ai-hint-box").innerHTML = "";
     document.getElementById("photo-preview").classList.remove("show");
     document.querySelectorAll(".field-error").forEach(function(el){ el.classList.remove("show"); });
     photoData = null;
-    identityVal = "ya";
-    document.querySelectorAll("#seg-identity button").forEach(function(b){ b.classList.toggle("active", b.dataset.val==="ya"); });
   }
 
   document.getElementById("btn-selesai-form").addEventListener("click", function(){
     var area = document.getElementById("f-area").value;
-    var dept = document.getElementById("f-dept").value;
-    var line = document.getElementById("f-line").value;
     var lokasi = document.getElementById("f-lokasi").value.trim();
-    var judul = document.getElementById("f-judul").value.trim();
     var detail = document.getElementById("f-detail").value.trim();
-    var agree = document.getElementById("f-agree").checked;
 
     var ok = true;
-    document.getElementById("err-judul").classList.toggle("show", !judul); if(!judul) ok=false;
+    if(!area){ showToast("Pilih Area terlebih dahulu."); ok=false; }
+    document.getElementById("err-lokasi").classList.toggle("show", !lokasi); if(!lokasi) ok=false;
     document.getElementById("err-detail").classList.toggle("show", !detail); if(!detail) ok=false;
-    document.getElementById("err-agree").classList.toggle("show", !agree); if(!agree) ok=false;
-    if(!area || !dept || !line){ showToast("Lengkapi Area, Department, dan Line."); ok=false; }
+    document.getElementById("err-photo").classList.toggle("show", !photoData); if(!photoData) ok=false;
     if(!ok) return;
 
-    state.draft = { area, dept, line, lokasi, judul, detail, photo: photoData, identity: identityVal };
+    var check = locationCheck(lokasi);
+    renderLocationCheck(check);
+    if(!check.ok){
+      showToast("AI mendeteksi detail lokasi belum lengkap. Lihat saran di bawah kolom lokasi.");
+      return;
+    }
+
+    var kategori = classify(detail);
+    state.draft = {
+      area: area, lokasi: lokasi, detail: detail, photo: photoData,
+      kategori: kategori, severity: severityFor(detail), judul: generateTitle(detail),
+      identity: kategori === "Private" ? "tidak" : "ya", agree: false
+    };
     goTo("preview");
   });
 
@@ -958,13 +998,19 @@
     if(!d) return;
     var box = document.getElementById("preview-list");
     box.innerHTML = [
-      row("Area", d.area), row("Department", d.dept), row("Line", d.line),
-      row("Detail Lokasi", d.lokasi || "—"),
-      row("Judul", d.judul), row("Detail Voice", d.detail),
-      row("Identitas", d.identity==="ya" ? "Open Identity" : "Anonim")
+      row("Area", d.area), row("Detail Lokasi", d.lokasi),
+      row("Judul (Auto)", d.judul), row("Kategori (Auto)", d.kategori),
+      row("Severity (Auto)", d.severity), row("Detail Voice", d.detail)
     ].join("");
     var img = document.getElementById("preview-photo");
-    if(d.photo){ img.src = d.photo; img.style.display="block"; } else { img.style.display="none"; }
+    img.src = d.photo; img.style.display = "block";
+
+    document.querySelectorAll("#seg-identity button").forEach(function(b){
+      b.classList.toggle("active", b.dataset.val === d.identity);
+    });
+    document.getElementById("preview-agree-field").style.display = d.kategori === "Private" ? "block" : "none";
+    document.getElementById("f-agree").checked = !!d.agree;
+    document.getElementById("err-agree").classList.remove("show");
   }
   function row(k,v){
     return '<div class="preview-row"><div class="k">'+k+'</div><div class="v">'+escapeHtml(v)+'</div></div>';
@@ -976,14 +1022,18 @@
   document.getElementById("btn-kirim-voice").addEventListener("click", function(){
     var d = state.draft;
     if(!d) return;
+    if(d.kategori === "Private" && !d.agree){
+      document.getElementById("err-agree").classList.add("show");
+      showToast("Mohon setujui pernyataan fakta terlebih dahulu.");
+      return;
+    }
     seq += 1;
     var idNum = String(seq).padStart(4,"0");
-    var kategori = classify(d.judul+" "+d.detail);
     var now = new Date();
     var v = {
       id: "VO-2025-"+idNum,
-      judul: d.judul, detail: d.detail, area: d.area, dept: d.dept, line: d.line,
-      status: "menunggu", kategori: kategori, severity: severityFor(d.judul+" "+d.detail),
+      judul: d.judul, detail: d.detail, area: d.area,
+      status: "menunggu", kategori: d.kategori, severity: d.severity,
       identity: d.identity==="ya", lokasi: d.lokasi, photo: d.photo,
       created: now,
       timeline: [{ title:"Voice dikirim ("+(d.identity==="ya"?"Open Identity":"Anonim")+")", who:"Oleh Anda", time: now, done:true }],
@@ -1027,7 +1077,7 @@
       return '<div class="voice-item" data-id="'+v.id+'">'+
         '<div class="top-row"><div class="ttl">'+escapeHtml(v.judul)+'</div>'+
         '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
-        '<div class="meta">'+escapeHtml(v.area)+' • '+escapeHtml(v.dept)+' • '+escapeHtml(v.line)+'</div>'+
+        '<div class="meta">'+escapeHtml(v.area)+' • '+escapeHtml(v.kategori)+'</div>'+
         '<div class="idline">ID: '+v.id+' &middot; '+fmtDate(v.created)+'</div>'+
       '</div>';
     }).join("");
@@ -1089,7 +1139,7 @@
         '<div class="tags"><div class="pill">'+escapeHtml(v.kategori)+'</div><div class="pill">Severity: '+escapeHtml(v.severity)+'</div>'+
         '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
         '<div class="ttl">'+escapeHtml(v.judul)+'</div>'+
-        '<div class="idrow">ID: '+v.id+' &middot; '+escapeHtml(v.area)+' • '+escapeHtml(v.dept)+' • '+escapeHtml(v.line)+'</div>'+
+        '<div class="idrow">ID: '+v.id+' &middot; '+escapeHtml(v.area)+'</div>'+
         (v.lokasi ? '<div class="idrow" style="margin-top:4px;">📍 '+escapeHtml(v.lokasi)+'</div>' : '') +
         '<div class="idrow" style="margin-top:4px;">👤 '+(v.identity ? "Open Identity" : "Anonim")+'</div>'+
         (photoHtml ? '<div style="margin-top:10px;">'+photoHtml+'</div>' : '') +
