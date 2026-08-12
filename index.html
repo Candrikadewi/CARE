@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CARE — Member Voice Prototype</title>
+<title>CARE — Voice Menu Flow Prototype</title>
 <style>
   :root{
     --navy-900:#0f1f4d;
@@ -13,10 +13,15 @@
     --blue-500:#3b6fe0;
     --blue-50:#eef2fd;
     --red-600:#e0263d;
+    --red-50:#fde7e9;
+    --amber-600:#c98a00;
+    --amber-50:#fff6e0;
     --orange-600:#f5821f;
     --orange-50:#fff2e3;
     --green-600:#1f9d55;
     --green-50:#e8f8ef;
+    --crit-700:#8f1230;
+    --crit-50:#fbe4ea;
     --gray-900:#1b1e28;
     --gray-600:#5b6172;
     --gray-400:#9aa0b1;
@@ -38,235 +43,96 @@
     align-items:center;
     padding:28px 16px 60px;
   }
-  .page-head{
-    text-align:center;
-    max-width:640px;
-    margin-bottom:22px;
+  .page-head{ text-align:center; max-width:720px; margin-bottom:16px; }
+  .page-head h1{ font-size:22px; margin:0 0 6px; color:var(--navy-800); letter-spacing:.2px; }
+  .page-head p{ margin:0; color:var(--gray-600); font-size:13.5px; }
+
+  .role-tabs{
+    display:flex; gap:8px; background:var(--white); padding:6px; border-radius:999px;
+    box-shadow:var(--shadow); margin-bottom:16px;
   }
-  .page-head h1{
-    font-size:22px;
-    margin:0 0 6px;
-    color:var(--navy-800);
-    letter-spacing:.2px;
+  .role-tab{
+    border:none; background:transparent; padding:9px 18px; border-radius:999px;
+    font-size:13px; font-weight:800; color:var(--gray-600); cursor:pointer; display:flex; align-items:center; gap:7px;
   }
-  .page-head p{
-    margin:0;
-    color:var(--gray-600);
-    font-size:13.5px;
+  .role-tab.active{ background:linear-gradient(135deg,var(--navy-800),var(--navy-700)); color:#fff; }
+
+  .pic-hint, .stepper{
+    display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin:0 0 20px; max-width:920px;
   }
-  .stepper{
-    display:flex;
-    gap:6px;
-    flex-wrap:wrap;
-    justify-content:center;
-    margin:18px 0 26px;
-    max-width:900px;
-  }
+  .pic-hint{ display:none; }
   .step-btn{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    background:var(--white);
-    border:1px solid var(--gray-200);
-    border-radius:999px;
-    padding:7px 14px 7px 7px;
-    cursor:pointer;
-    font-size:12.5px;
-    color:var(--navy-800);
-    font-weight:600;
-    transition:.15s;
+    display:flex; align-items:center; gap:8px; background:var(--white);
+    border:1px solid var(--gray-200); border-radius:999px; padding:7px 14px 7px 7px;
+    cursor:pointer; font-size:12px; color:var(--navy-800); font-weight:600; transition:.15s;
     box-shadow:0 2px 6px rgba(15,31,77,0.06);
   }
   .step-btn:hover{ transform:translateY(-1px); box-shadow:0 6px 14px rgba(15,31,77,0.12); }
   .step-btn.active{ background:var(--navy-800); color:var(--white); border-color:var(--navy-800); }
   .step-btn .num{
-    width:20px;height:20px;border-radius:50%;
-    background:var(--navy-700);color:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:11px; flex:none;
+    width:19px;height:19px;border-radius:50%; background:var(--navy-700);color:#fff;
+    display:flex;align-items:center;justify-content:center; font-size:10.5px; flex:none;
   }
   .step-btn.active .num{ background:var(--white); color:var(--navy-800); }
-
-  .stage{
-    display:flex;
-    gap:28px;
-    align-items:flex-start;
-    justify-content:center;
-    flex-wrap:wrap;
-    width:100%;
-    max-width:1100px;
+  .hint-pill{
+    background:var(--white); border:1px dashed var(--gray-200); border-radius:999px;
+    padding:8px 16px; font-size:12px; color:var(--gray-600); font-weight:600;
   }
+
+  .stage{ display:flex; gap:28px; align-items:flex-start; justify-content:center; flex-wrap:wrap; width:100%; max-width:1180px; }
 
   /* Phone frame */
-  .phone{
-    width:360px;
-    height:760px;
-    background:#0b0e18;
-    border-radius:46px;
-    padding:12px;
-    box-shadow:0 30px 60px rgba(10,20,60,0.28), 0 2px 0 rgba(255,255,255,0.4) inset;
-    position:relative;
-    flex:none;
-  }
-  .phone-screen{
-    width:100%;
-    height:100%;
-    background:var(--gray-100);
-    border-radius:34px;
-    overflow:hidden;
-    position:relative;
-    display:flex;
-    flex-direction:column;
-  }
-  .notch{
-    position:absolute;
-    top:0; left:50%; transform:translateX(-50%);
-    width:120px; height:22px;
-    background:#0b0e18;
-    border-radius:0 0 16px 16px;
-    z-index:50;
-  }
-  .status-bar{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:10px 22px 4px;
-    font-size:13px; font-weight:600; color:var(--gray-900);
-    background:transparent;
-    flex:none;
-  }
+  .phone{ width:360px; height:760px; background:#0b0e18; border-radius:46px; padding:12px;
+    box-shadow:0 30px 60px rgba(10,20,60,0.28), 0 2px 0 rgba(255,255,255,0.4) inset; position:relative; flex:none; }
+  .phone-screen{ width:100%; height:100%; background:var(--gray-100); border-radius:34px; overflow:hidden; position:relative; display:flex; flex-direction:column; }
+  .notch{ position:absolute; top:0; left:50%; transform:translateX(-50%); width:120px; height:22px; background:#0b0e18; border-radius:0 0 16px 16px; z-index:50; }
+  .status-bar{ display:flex; justify-content:space-between; align-items:center; padding:10px 22px 4px; font-size:13px; font-weight:600; color:var(--gray-900); flex:none; }
   .status-bar .icons{ display:flex; gap:5px; align-items:center; font-size:12px; }
-
-  .app-body{
-    flex:1;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    -webkit-overflow-scrolling:touch;
-  }
+  .app-body{ flex:1; overflow-y:auto; display:flex; flex-direction:column; -webkit-overflow-scrolling:touch; }
   .app-body::-webkit-scrollbar{ width:0; }
-
   .screen{ display:none; flex-direction:column; height:100%; }
   .screen.active{ display:flex; }
 
+  /* Browser / dashboard frame */
+  .browser{ width:640px; max-width:92vw; background:#0b0e18; border-radius:20px; padding:10px; box-shadow:0 30px 60px rgba(10,20,60,0.28); flex:none; }
+  .browser-chrome{ display:flex; align-items:center; gap:8px; padding:8px 10px 10px; }
+  .chrome-dot{ width:10px; height:10px; border-radius:50%; }
+  .browser-addr{ flex:1; background:rgba(255,255,255,0.08); color:#cfd6ea; font-size:11px; border-radius:999px; padding:6px 14px; margin-left:6px; }
+  .browser-screen{ width:100%; height:730px; background:var(--gray-100); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
+
   /* Generic header */
-  .app-header{
-    background:linear-gradient(135deg,var(--navy-800),var(--navy-700));
-    color:#fff;
-    padding:14px 18px 16px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    flex:none;
-  }
+  .app-header{ background:linear-gradient(135deg,var(--navy-800),var(--navy-700)); color:#fff; padding:14px 18px 16px; display:flex; align-items:center; gap:12px; flex:none; }
   .app-header .title-block{ flex:1; }
   .app-header h2{ margin:0; font-size:17px; font-weight:700; }
   .app-header .sub{ font-size:11.5px; opacity:.8; margin-top:2px; }
-  .icon-btn{
-    width:34px;height:34px;border-radius:10px;
-    background:rgba(255,255,255,0.12);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer; font-size:16px; color:#fff; flex:none;
-    border:none;
-    position:relative;
-  }
+  .icon-btn{ width:34px;height:34px;border-radius:10px; background:rgba(255,255,255,0.12); display:flex;align-items:center;justify-content:center; cursor:pointer; font-size:16px; color:#fff; flex:none; border:none; position:relative; }
   .icon-btn:hover{ background:rgba(255,255,255,0.22); }
-  .badge{
-    position:absolute; top:-4px; right:-4px;
-    background:var(--red-600); color:#fff;
-    font-size:9px; font-weight:700;
-    border-radius:999px; padding:1px 5px;
-    min-width:15px; text-align:center;
-  }
-
-  .content-scroll{ padding:16px 16px 90px; flex:1; }
+  .badge{ position:absolute; top:-4px; right:-4px; background:var(--red-600); color:#fff; font-size:9px; font-weight:700; border-radius:999px; padding:1px 5px; min-width:15px; text-align:center; }
+  .content-scroll{ padding:16px 16px 90px; flex:1; overflow-y:auto; }
 
   /* myTMMIN home */
-  .brand-strip{
-    display:flex; gap:6px; overflow-x:auto; padding:12px 14px;
-    background:linear-gradient(135deg,#c8102e,#8f0d21);
-  }
-  .brand-strip span{
-    background:rgba(255,255,255,0.18);
-    color:#fff; font-size:10px; font-weight:700;
-    padding:5px 9px; border-radius:8px; white-space:nowrap;
-  }
-  .app-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:14px;
-    margin-top:14px;
-  }
-  .app-tile{
-    display:flex; flex-direction:column; align-items:center; gap:6px;
-    cursor:pointer;
-    padding:6px 2px;
-    border-radius:12px;
-    transition:.15s;
-  }
+  .brand-strip{ display:flex; gap:6px; overflow-x:auto; padding:12px 14px; background:linear-gradient(135deg,#c8102e,#8f0d21); }
+  .brand-strip span{ background:rgba(255,255,255,0.18); color:#fff; font-size:10px; font-weight:700; padding:5px 9px; border-radius:8px; white-space:nowrap; }
+  .app-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:14px; }
+  .app-tile{ display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; padding:6px 2px; border-radius:12px; transition:.15s; }
   .app-tile:hover{ background:rgba(43,87,201,0.08); }
-  .app-tile .ic{
-    width:48px;height:48px;border-radius:14px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:22px;
-    background:var(--blue-50); color:var(--blue-600);
-  }
+  .app-tile .ic{ width:48px;height:48px;border-radius:14px; display:flex;align-items:center;justify-content:center; font-size:22px; background:var(--blue-50); color:var(--blue-600); }
   .app-tile span{ font-size:10.5px; text-align:center; color:var(--gray-600); font-weight:600; line-height:1.2; }
-  .app-tile.highlight .ic{
-    background:linear-gradient(135deg,#1f9d55,#0f7a3d);
-    color:#fff;
-    box-shadow:0 0 0 4px rgba(31,157,85,0.18);
-    animation:pulse 1.8s infinite;
-  }
+  .app-tile.highlight .ic{ background:linear-gradient(135deg,#1f9d55,#0f7a3d); color:#fff; box-shadow:0 0 0 4px rgba(31,157,85,0.18); animation:pulse 1.8s infinite; }
   .app-tile.highlight span{ color:var(--green-600); font-weight:800; }
-  @keyframes pulse{
-    0%{ box-shadow:0 0 0 0 rgba(31,157,85,0.35); }
-    70%{ box-shadow:0 0 0 8px rgba(31,157,85,0); }
-    100%{ box-shadow:0 0 0 0 rgba(31,157,85,0); }
-  }
-  .helper-banner{
-    margin-top:16px;
-    background:var(--white);
-    border:1px dashed var(--gray-200);
-    border-radius:12px;
-    padding:10px 12px;
-    font-size:11.5px;
-    color:var(--gray-600);
-    display:flex; gap:8px; align-items:center;
-  }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(31,157,85,0.35); } 70%{ box-shadow:0 0 0 8px rgba(31,157,85,0); } 100%{ box-shadow:0 0 0 0 rgba(31,157,85,0); } }
+  .helper-banner{ margin-top:16px; background:var(--white); border:1px dashed var(--gray-200); border-radius:12px; padding:10px 12px; font-size:11.5px; color:var(--gray-600); display:flex; gap:8px; align-items:center; }
 
   /* CARE home */
-  .care-hero{
-    background:linear-gradient(135deg,var(--navy-800),var(--navy-700));
-    color:#fff;
-    padding:22px 18px 26px;
-    flex:none;
-  }
-  .care-hero .logo{
-    width:44px;height:44px;border-radius:12px;
-    background:rgba(255,255,255,0.15);
-    display:flex;align-items:center;justify-content:center;
-    font-size:22px; margin-bottom:10px;
-  }
+  .care-hero{ background:linear-gradient(135deg,var(--navy-800),var(--navy-700)); color:#fff; padding:22px 18px 26px; flex:none; }
+  .care-hero .logo{ width:44px;height:44px;border-radius:12px; background:rgba(255,255,255,0.15); display:flex;align-items:center;justify-content:center; font-size:22px; margin-bottom:10px; }
   .care-hero h1{ margin:0 0 4px; font-size:22px; letter-spacing:.5px; }
   .care-hero .tagline{ font-size:11px; opacity:.85; font-weight:600; letter-spacing:.3px; text-transform:uppercase; }
   .care-hero .desc{ font-size:12px; opacity:.85; margin-top:8px; line-height:1.4; }
 
-  .menu-card{
-    background:var(--white);
-    border-radius:16px;
-    padding:14px 16px;
-    display:flex; align-items:center; gap:12px;
-    box-shadow:var(--shadow);
-    margin-bottom:12px;
-    cursor:pointer;
-    border:1px solid var(--gray-200);
-    transition:.15s;
-  }
+  .menu-card{ background:var(--white); border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; box-shadow:var(--shadow); margin-bottom:12px; cursor:pointer; border:1px solid var(--gray-200); transition:.15s; }
   .menu-card:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(15,31,77,0.14); }
-  .menu-card .ic{
-    width:42px;height:42px;border-radius:12px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:20px; flex:none;
-  }
+  .menu-card .ic{ width:42px;height:42px;border-radius:12px; display:flex;align-items:center;justify-content:center; font-size:20px; flex:none; }
   .menu-card .ic.voice{ background:var(--blue-50); color:var(--blue-600); }
   .menu-card .ic.tft{ background:var(--orange-50); color:var(--orange-600); }
   .menu-card .ic.survey{ background:var(--green-50); color:var(--green-600); }
@@ -276,153 +142,134 @@
   .menu-card .chev{ color:var(--gray-400); font-size:16px; }
 
   /* Voice home */
-  .action-card{
-    background:var(--white); border-radius:16px; padding:14px 16px;
-    display:flex; align-items:center; gap:12px; margin-bottom:10px;
-    box-shadow:var(--shadow); cursor:pointer; border:1px solid var(--gray-200);
-  }
+  .action-card{ background:var(--white); border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; box-shadow:var(--shadow); cursor:pointer; border:1px solid var(--gray-200); }
   .action-card:hover{ transform:translateY(-2px); }
-  .action-card .ic{
-    width:42px;height:42px;border-radius:12px;color:#fff;
-    display:flex;align-items:center;justify-content:center;font-size:19px;flex:none;
-  }
+  .action-card .ic{ width:42px;height:42px;border-radius:12px;color:#fff; display:flex;align-items:center;justify-content:center;font-size:19px;flex:none; }
   .action-card .txt{ flex:1; }
   .action-card .chev{ color:var(--gray-400); font-size:16px; }
   .action-card.primary .ic{ background:linear-gradient(135deg,var(--blue-600),#1d3f9e); }
   .action-card.secondary .ic{ background:linear-gradient(135deg,#1f9d55,#0f7a3d); }
   .section-label{ font-size:12.5px; font-weight:700; color:var(--gray-600); margin:18px 0 10px; text-transform:uppercase; letter-spacing:.4px; }
   .stats-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .stat-card{
-    background:var(--white); border-radius:14px; padding:12px;
-    border:1px solid var(--gray-200); cursor:pointer; transition:.15s;
-  }
+  .stat-card{ background:var(--white); border-radius:14px; padding:12px; border:1px solid var(--gray-200); cursor:pointer; transition:.15s; }
   .stat-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
   .stat-card .num{ font-size:22px; font-weight:800; color:var(--navy-800); }
   .stat-card .lbl{ font-size:11px; color:var(--gray-600); margin-top:2px; font-weight:600; }
-  .stat-card.warn .num{ color:var(--red-600); }
-  .stat-card.klar .num{ color:var(--orange-600); }
-  .stat-card.proc .num{ color:var(--blue-600); }
-  .stat-card.done .num{ color:var(--green-600); }
+  .stat-card.open .num{ color:var(--red-600); }
+  .stat-card.verif .num{ color:var(--amber-600); }
+  .stat-card.prog .num{ color:var(--blue-600); }
+  .stat-card.closed .num{ color:var(--green-600); }
 
   /* Form */
   .field{ margin-bottom:14px; }
   .field label{ display:block; font-size:12.5px; font-weight:700; color:var(--gray-900); margin-bottom:6px; }
   .field label .opt{ color:var(--gray-400); font-weight:500; }
-  .field select, .field input[type=text], .field textarea{
-    width:100%; border:1px solid var(--gray-200); border-radius:10px;
-    padding:11px 12px; font-size:13px; background:var(--white); color:var(--gray-900);
-    font-family:inherit;
-  }
+  .field label .req{ color:var(--red-600); font-weight:700; }
+  .field select, .field input[type=text], .field textarea{ width:100%; border:1px solid var(--gray-200); border-radius:10px; padding:11px 12px; font-size:13px; background:var(--white); color:var(--gray-900); font-family:inherit; }
   .field select:focus, .field input:focus, .field textarea:focus{ outline:2px solid var(--blue-500); outline-offset:-1px; }
   .field textarea{ resize:vertical; min-height:80px; }
-  .ai-hint-btn{
-    margin-top:6px; display:inline-flex; align-items:center; gap:6px;
-    background:var(--blue-50); color:var(--blue-600); border:none;
-    border-radius:8px; padding:6px 10px; font-size:11px; font-weight:700; cursor:pointer;
-  }
-  .ai-hint-box{
-    margin-top:8px; background:var(--orange-50); border:1px solid #f6d3ab;
-    border-radius:10px; padding:9px 11px; font-size:11.5px; color:#8a4d10; display:none;
-  }
+  .ai-hint-btn{ margin-top:6px; display:inline-flex; align-items:center; gap:6px; background:var(--blue-50); color:var(--blue-600); border:none; border-radius:8px; padding:6px 10px; font-size:11px; font-weight:700; cursor:pointer; }
+  .ai-hint-box{ margin-top:8px; background:var(--orange-50); border:1px solid #f6d3ab; border-radius:10px; padding:9px 11px; font-size:11.5px; color:#8a4d10; display:none; }
   .ai-hint-box.show{ display:block; }
   .ai-hint-box.ok{ background:var(--green-50); border-color:#bfe8cf; color:#146c37; }
   .ai-hint-box ul{ margin:6px 0 0; padding-left:16px; }
-  .field label .req{ color:var(--red-600); font-weight:700; }
-  .photo-upload{
-    border:1.5px dashed var(--gray-200); border-radius:12px; padding:16px;
-    text-align:center; cursor:pointer; color:var(--gray-600); font-size:12px;
-    background:var(--white);
-  }
+  .photo-upload{ border:1.5px dashed var(--gray-200); border-radius:12px; padding:16px; text-align:center; cursor:pointer; color:var(--gray-600); font-size:12px; background:var(--white); display:block; }
   .photo-upload:hover{ border-color:var(--blue-500); color:var(--blue-600); }
   .photo-preview{ margin-top:10px; display:none; }
   .photo-preview.show{ display:block; }
   .photo-preview img{ width:100%; max-height:140px; object-fit:cover; border-radius:10px; }
   .segmented{ display:flex; border:1px solid var(--gray-200); border-radius:10px; overflow:hidden; }
-  .segmented button{
-    flex:1; border:none; background:var(--white); padding:10px; font-size:12.5px; font-weight:700;
-    color:var(--gray-600); cursor:pointer;
-  }
+  .segmented button{ flex:1; border:none; background:var(--white); padding:10px; font-size:12.5px; font-weight:700; color:var(--gray-600); cursor:pointer; }
   .segmented button.active{ background:var(--blue-600); color:#fff; }
-  .checkbox-row{ display:flex; gap:9px; align-items:flex-start; font-size:12px; color:var(--gray-600); background:var(--white); border:1px solid var(--gray-200); border-radius:10px; padding:10px 12px; }
-  .checkbox-row input{ margin-top:2px; }
   .field-error{ color:var(--red-600); font-size:11px; margin-top:5px; display:none; }
   .field-error.show{ display:block; }
 
-  .btn{
-    display:block; width:100%; text-align:center;
-    padding:13px; border-radius:12px; border:none;
-    font-size:14px; font-weight:700; cursor:pointer;
-    font-family:inherit;
-  }
+  .btn{ display:block; width:100%; text-align:center; padding:13px; border-radius:12px; border:none; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
   .btn-primary{ background:linear-gradient(135deg,var(--blue-600),#1d3f9e); color:#fff; }
   .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-primary:disabled{ opacity:.5; cursor:not-allowed; }
   .btn-ghost{ background:var(--white); color:var(--navy-800); border:1px solid var(--gray-200); }
+  .btn-sm{ padding:9px 12px; font-size:12.5px; width:auto; display:inline-block; }
   .btn-row{ display:flex; gap:10px; }
   .btn-row .btn{ flex:1; }
 
   /* Preview */
-  .notice-ok{
-    background:var(--green-50); border:1px solid #bfe8cf; color:#146c37;
-    border-radius:12px; padding:11px 13px; font-size:12px; display:flex; gap:8px; align-items:flex-start;
-    margin-bottom:14px;
-  }
+  .notice-ok{ background:var(--green-50); border:1px solid #bfe8cf; color:#146c37; border-radius:12px; padding:11px 13px; font-size:12px; display:flex; gap:8px; align-items:flex-start; margin-bottom:14px; }
   .preview-list{ background:var(--white); border-radius:14px; border:1px solid var(--gray-200); overflow:hidden; margin-bottom:14px; }
   .preview-row{ display:flex; justify-content:space-between; gap:10px; padding:11px 14px; border-bottom:1px solid var(--gray-100); font-size:12.5px; }
   .preview-row:last-child{ border-bottom:none; }
   .preview-row .k{ color:var(--gray-600); flex:none; width:40%; }
   .preview-row .v{ font-weight:600; text-align:right; flex:1; }
   .preview-photo{ width:100%; max-height:150px; object-fit:cover; border-radius:12px; margin-bottom:14px; }
-  .back-note{
-    background:var(--blue-50); color:var(--navy-700); font-size:11.5px; border-radius:10px;
-    padding:9px 12px; margin-bottom:14px;
-  }
+  .back-note{ background:var(--blue-50); color:var(--navy-700); font-size:11.5px; border-radius:10px; padding:9px 12px; margin-bottom:14px; }
 
-  /* Riwayat */
+  /* AI processing screen */
+  .ai-processing-box{ background:var(--white); border:1px solid var(--gray-200); border-radius:16px; padding:16px; }
+  .ai-step{ display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--gray-100); opacity:.4; transition:.3s; }
+  .ai-step:last-child{ border-bottom:none; }
+  .ai-step.active{ opacity:1; }
+  .ai-step.done{ opacity:1; }
+  .ai-step .ic{ width:34px;height:34px;border-radius:10px; background:var(--blue-50); color:var(--blue-600); display:flex;align-items:center;justify-content:center; font-size:16px; flex:none; }
+  .ai-step.done .ic{ background:var(--green-50); color:var(--green-600); }
+  .ai-step .tt{ font-size:13px; font-weight:700; }
+  .ai-step .dd{ font-size:11.5px; color:var(--gray-600); margin-top:2px; }
+  .ai-step .rr{ font-size:11.5px; color:var(--green-600); font-weight:700; margin-top:4px; display:none; }
+  .ai-step.done .rr{ display:block; }
+  .ai-skip{ text-align:center; margin-top:14px; }
+  .ai-skip a{ font-size:12px; color:var(--gray-400); cursor:pointer; text-decoration:underline; }
+
+  /* Status stepper (tracking) */
+  .status-track{ display:flex; align-items:center; margin:8px 0 6px; }
+  .st-dot{ width:13px;height:13px;border-radius:50%; background:var(--gray-200); flex:none; border:2px solid var(--white); box-shadow:0 0 0 1px var(--gray-200); }
+  .st-dot.fill{ background:var(--blue-600); box-shadow:0 0 0 1px var(--blue-600); }
+  .st-dot.fill-closed{ background:var(--green-600); box-shadow:0 0 0 1px var(--green-600); }
+  .st-line{ flex:1; height:3px; background:var(--gray-200); }
+  .st-line.fill{ background:var(--blue-600); }
+  .st-line.fill-closed{ background:var(--green-600); }
+  .status-labels{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--gray-400); font-weight:700; margin-bottom:14px; }
+  .status-labels span.on{ color:var(--navy-800); }
+
+  /* Riwayat / PIC list */
   .filter-row{ display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px; }
-  .chip{
-    flex:none; padding:7px 12px; border-radius:999px; font-size:11.5px; font-weight:700;
-    background:var(--white); border:1px solid var(--gray-200); color:var(--gray-600); cursor:pointer; white-space:nowrap;
-  }
+  .chip{ flex:none; padding:7px 12px; border-radius:999px; font-size:11.5px; font-weight:700; background:var(--white); border:1px solid var(--gray-200); color:var(--gray-600); cursor:pointer; white-space:nowrap; }
   .chip.active{ background:var(--navy-800); color:#fff; border-color:var(--navy-800); }
-  .chip.c-warn.active{ background:var(--red-600); border-color:var(--red-600); }
-  .chip.c-klar.active{ background:var(--orange-600); border-color:var(--orange-600); }
-  .chip.c-proc.active{ background:var(--blue-600); border-color:var(--blue-600); }
-  .chip.c-done.active{ background:var(--green-600); border-color:var(--green-600); }
+  .chip.c-open.active{ background:var(--red-600); border-color:var(--red-600); }
+  .chip.c-verif.active{ background:var(--amber-600); border-color:var(--amber-600); }
+  .chip.c-prog.active{ background:var(--blue-600); border-color:var(--blue-600); }
+  .chip.c-closed.active{ background:var(--green-600); border-color:var(--green-600); }
 
-  .voice-item{
-    background:var(--white); border:1px solid var(--gray-200); border-radius:14px;
-    padding:13px 14px; margin-bottom:10px; cursor:pointer; transition:.15s;
-  }
+  .voice-item{ background:var(--white); border:1px solid var(--gray-200); border-radius:14px; padding:13px 14px; margin-bottom:10px; cursor:pointer; transition:.15s; }
   .voice-item:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
+  .voice-item.selected{ border-color:var(--blue-500); box-shadow:0 0 0 2px var(--blue-50); }
   .voice-item .top-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px; }
   .voice-item .ttl{ font-size:13.5px; font-weight:700; color:var(--gray-900); }
   .status-tag{ font-size:10px; font-weight:800; padding:3px 8px; border-radius:999px; flex:none; white-space:nowrap; }
-  .status-tag.s-warn{ background:#fde7e9; color:var(--red-600); }
-  .status-tag.s-klar{ background:var(--orange-50); color:var(--orange-600); }
-  .status-tag.s-proc{ background:var(--blue-50); color:var(--blue-600); }
-  .status-tag.s-done{ background:var(--green-50); color:var(--green-600); }
+  .status-tag.s-open{ background:var(--red-50); color:var(--red-600); }
+  .status-tag.s-verif{ background:var(--amber-50); color:var(--amber-600); }
+  .status-tag.s-prog{ background:var(--blue-50); color:var(--blue-600); }
+  .status-tag.s-closed{ background:var(--green-50); color:var(--green-600); }
   .voice-item .meta{ font-size:11px; color:var(--gray-600); }
   .voice-item .idline{ font-size:10.5px; color:var(--gray-400); margin-top:4px; }
   .empty-state{ text-align:center; color:var(--gray-400); font-size:12.5px; padding:40px 10px; }
+  .reopen-tag{ font-size:9.5px; font-weight:800; background:var(--orange-50); color:var(--orange-600); padding:2px 7px; border-radius:999px; margin-left:6px; }
 
   /* Detail */
   .detail-card{ background:var(--white); border:1px solid var(--gray-200); border-radius:16px; padding:16px; margin-bottom:16px; }
   .detail-card .ttl{ font-size:15px; font-weight:800; margin-bottom:6px; }
-  .detail-card .tags{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+  .detail-card .tags{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; align-items:center; }
   .pill{ font-size:10.5px; font-weight:700; background:var(--gray-100); color:var(--gray-600); padding:4px 9px; border-radius:999px; }
+  .pill.sv-low{ background:var(--green-50); color:var(--green-600); }
+  .pill.sv-medium{ background:var(--amber-50); color:var(--amber-600); }
+  .pill.sv-high{ background:var(--orange-50); color:var(--orange-600); }
+  .pill.sv-critical{ background:var(--crit-50); color:var(--crit-700); }
   .detail-card .idrow{ font-size:11px; color:var(--gray-400); }
   .timeline{ position:relative; padding-left:22px; }
   .tl-item{ position:relative; padding-bottom:20px; }
   .tl-item:last-child{ padding-bottom:0; }
-  .tl-item::before{
-    content:''; position:absolute; left:-17px; top:2px; width:10px; height:10px; border-radius:50%;
-    background:var(--gray-400); border:2px solid var(--white); box-shadow:0 0 0 2px var(--gray-200);
-  }
+  .tl-item::before{ content:''; position:absolute; left:-17px; top:2px; width:10px; height:10px; border-radius:50%; background:var(--gray-400); border:2px solid var(--white); box-shadow:0 0 0 2px var(--gray-200); }
   .tl-item.done::before{ background:var(--green-600); box-shadow:0 0 0 2px #bfe8cf; }
   .tl-item.active::before{ background:var(--blue-600); box-shadow:0 0 0 2px var(--blue-50); }
-  .tl-item::after{
-    content:''; position:absolute; left:-13px; top:12px; bottom:0; width:1.5px; background:var(--gray-200);
-  }
+  .tl-item::after{ content:''; position:absolute; left:-13px; top:12px; bottom:0; width:1.5px; background:var(--gray-200); }
   .tl-item:last-child::after{ display:none; }
   .tl-item .tl-title{ font-size:12.5px; font-weight:700; }
   .tl-item .tl-time{ font-size:10.5px; color:var(--gray-400); margin:1px 0 3px; }
@@ -434,55 +281,76 @@
   .stars span{ font-size:26px; cursor:pointer; color:var(--gray-200); transition:.1s; }
   .stars span.on{ color:#f5b400; }
   .rate-done{ text-align:center; color:var(--green-600); font-size:12.5px; font-weight:700; padding:6px 0; }
+  .reopen-ask{ text-align:center; padding:6px 0; }
+  .reopen-ask p{ font-size:12.5px; color:var(--gray-900); font-weight:700; margin:0 0 10px; }
 
   /* Bottom nav */
-  .bottom-nav{
-    display:flex; background:var(--white); border-top:1px solid var(--gray-200);
-    padding:8px 6px 10px; flex:none;
-  }
-  .nav-item{
-    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
-    font-size:10px; color:var(--gray-400); font-weight:700; cursor:pointer; position:relative;
-  }
+  .bottom-nav{ display:flex; background:var(--white); border-top:1px solid var(--gray-200); padding:8px 6px 10px; flex:none; }
+  .nav-item{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10px; color:var(--gray-400); font-weight:700; cursor:pointer; position:relative; }
   .nav-item.active{ color:var(--blue-600); }
   .nav-item .nic{ font-size:18px; }
-  .nav-item .nbadge{
-    position:absolute; top:-3px; right:20%; background:var(--red-600); color:#fff;
-    font-size:8px; border-radius:999px; padding:1px 4px; font-weight:800;
-  }
+  .nav-item .nbadge{ position:absolute; top:-3px; right:20%; background:var(--red-600); color:#fff; font-size:8px; border-radius:999px; padding:1px 4px; font-weight:800; }
 
-  .toast{
-    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
-    background:var(--gray-900); color:#fff; padding:11px 18px; border-radius:999px;
-    font-size:12.5px; font-weight:600; opacity:0; pointer-events:none; transition:.25s;
-    z-index:999; box-shadow:0 10px 26px rgba(0,0,0,0.25);
-  }
+  .toast{ position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--gray-900); color:#fff; padding:11px 18px; border-radius:999px; font-size:12.5px; font-weight:600; opacity:0; pointer-events:none; transition:.25s; z-index:999; box-shadow:0 10px 26px rgba(0,0,0,0.25); max-width:88vw; text-align:center; }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
-  .side-note{
-    width:280px; flex:none;
-    background:var(--white); border-radius:16px; padding:18px;
-    box-shadow:var(--shadow); font-size:12.5px; color:var(--gray-600); line-height:1.55;
-  }
+  .side-note{ width:280px; flex:none; background:var(--white); border-radius:16px; padding:18px; box-shadow:var(--shadow); font-size:12.5px; color:var(--gray-600); line-height:1.55; }
   .side-note h3{ font-size:13.5px; color:var(--navy-800); margin:0 0 10px; }
   .side-note .leg{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
   .leg-dot{ width:9px; height:9px; border-radius:50%; flex:none; }
-  @media (max-width:860px){
-    .side-note{ order:2; width:100%; max-width:360px; }
-  }
+  .side-note ol{ margin:0; padding-left:18px; }
+  .side-note ol li{ margin-bottom:8px; }
+  @media (max-width:1040px){ .side-note{ order:2; width:100%; max-width:640px; } }
+
+  /* PIC dashboard */
+  .pic-topbar{ background:linear-gradient(135deg,var(--navy-800),var(--navy-700)); color:#fff; padding:14px 18px; display:flex; align-items:center; gap:12px; flex:none; }
+  .pic-topbar .title-block{ flex:1; }
+  .pic-topbar h2{ margin:0; font-size:16px; }
+  .pic-topbar .sub{ font-size:11px; opacity:.8; margin-top:2px; }
+  .pic-filters{ padding:12px 16px 0; flex:none; }
+  .pic-body{ display:flex; flex:1; overflow:hidden; }
+  .pic-list-col{ width:44%; border-right:1px solid var(--gray-200); overflow-y:auto; padding:0 10px 16px 16px; flex:none; }
+  .pic-detail-col{ flex:1; overflow-y:auto; padding:16px 18px 30px; }
+  .pic-card{ background:var(--white); border:1px solid var(--gray-200); border-radius:12px; padding:11px 12px; margin-bottom:9px; cursor:pointer; font-size:12px; }
+  .pic-card:hover{ box-shadow:var(--shadow); }
+  .pic-card.selected{ border-color:var(--blue-500); box-shadow:0 0 0 2px var(--blue-50); }
+  .pic-card .ttl{ font-weight:700; font-size:12.5px; margin-bottom:4px; }
+  .pic-action-box{ background:var(--white); border:1px solid var(--gray-200); border-radius:14px; padding:14px; margin-bottom:14px; }
+  .pic-action-box h4{ margin:0 0 10px; font-size:13px; }
+  .pic-action-box .btn-row{ flex-wrap:wrap; }
+  .pic-action-box .btn-row .btn{ flex:1 1 auto; min-width:120px; }
+  .update-log{ margin-top:12px; }
+  .update-log textarea{ width:100%; border:1px solid var(--gray-200); border-radius:10px; padding:10px; font-size:12.5px; min-height:60px; font-family:inherit; margin-bottom:8px; }
+  .assign-row{ display:flex; gap:8px; margin-top:8px; }
+  .assign-row select{ flex:1; border:1px solid var(--gray-200); border-radius:10px; padding:8px; font-size:12.5px; }
+  .clarify-row{ margin-top:8px; }
+  .clarify-row input{ width:100%; border:1px solid var(--gray-200); border-radius:10px; padding:9px 11px; font-size:12.5px; margin-bottom:8px; }
+
+  .reset-btn{ position:fixed; top:14px; right:14px; background:var(--white); border:1px solid var(--gray-200); border-radius:999px; padding:8px 14px; font-size:11.5px; font-weight:700; color:var(--gray-600); cursor:pointer; box-shadow:var(--shadow); z-index:500; }
+  .reset-btn:hover{ color:var(--red-600); border-color:var(--red-600); }
 </style>
 </head>
 <body>
 
+  <button class="reset-btn" id="btn-reset-demo">🔄 Reset Demo</button>
+
   <div class="page-head">
-    <h1>🤝 CARE — Member Voice App Prototype</h1>
-    <p>Prototipe interaktif alur member menyampaikan voice &amp; memantau progresnya (myTMMIN → CARE → Voice).</p>
+    <h1>🤝 CARE — Voice Menu Flow Prototype</h1>
+    <p>Prototipe interaktif: Pelapor mengajukan voice → AI menganalisis &amp; merutekan → Responder/PIC menindaklanjuti. Ganti peran di bawah untuk demo kedua sisi.</p>
+  </div>
+
+  <div class="role-tabs" id="role-tabs">
+    <button class="role-tab active" data-role="pelapor">👤 Pelapor</button>
+    <button class="role-tab" data-role="pic">🛠️ Responder / PIC</button>
   </div>
 
   <div class="stepper" id="stepper"></div>
+  <div class="pic-hint" id="pic-hint">
+    <div class="hint-pill">🔔 Voice baru masuk sebagai <b>OPEN</b> → tindak lanjuti di panel kanan untuk memindahkannya melalui alur status.</div>
+  </div>
 
   <div class="stage">
-    <div class="phone">
+    <div class="phone" id="pelapor-wrap">
       <div class="notch"></div>
       <div class="phone-screen">
         <div class="status-bar">
@@ -512,7 +380,7 @@
                 <div class="app-tile"><div class="ic">📅</div><span>Kalender Event</span></div>
                 <div class="app-tile highlight" data-nav="care-home"><div class="ic">🤝</div><span>CARE</span></div>
               </div>
-              <div class="helper-banner">💡 Ketuk ikon <b>CARE</b> yang berkedip untuk mulai menyampaikan voice.</div>
+              <div class="helper-banner">💡 Ketuk ikon <b>CARE</b> yang berkedip untuk mengakses menu CARE Voice.</div>
             </div>
           </div>
 
@@ -573,17 +441,17 @@
                 <div class="stat-card" data-nav="riwayat" data-filter="semua">
                   <div class="num" id="stat-total">0</div><div class="lbl">Total Voice</div>
                 </div>
-                <div class="stat-card warn" data-nav="riwayat" data-filter="menunggu">
-                  <div class="num" id="stat-warn">0</div><div class="lbl">Menunggu Respon</div>
+                <div class="stat-card open" data-nav="riwayat" data-filter="open">
+                  <div class="num" id="stat-open">0</div><div class="lbl">Open</div>
                 </div>
-                <div class="stat-card klar" data-nav="riwayat" data-filter="klarifikasi">
-                  <div class="num" id="stat-klar">0</div><div class="lbl">Butuh Klarifikasi</div>
+                <div class="stat-card verif" data-nav="riwayat" data-filter="verification">
+                  <div class="num" id="stat-verif">0</div><div class="lbl">In Verification</div>
                 </div>
-                <div class="stat-card proc" data-nav="riwayat" data-filter="diproses">
-                  <div class="num" id="stat-proc">0</div><div class="lbl">Diproses</div>
+                <div class="stat-card prog" data-nav="riwayat" data-filter="progress">
+                  <div class="num" id="stat-prog">0</div><div class="lbl">In Progress</div>
                 </div>
-                <div class="stat-card done" data-nav="riwayat" data-filter="selesai">
-                  <div class="num" id="stat-done">0</div><div class="lbl">Selesai</div>
+                <div class="stat-card closed" data-nav="riwayat" data-filter="closed">
+                  <div class="num" id="stat-closed">0</div><div class="lbl">Closed</div>
                 </div>
               </div>
             </div>
@@ -599,7 +467,7 @@
           <div class="screen" id="screen-isi-voice">
             <div class="app-header">
               <button class="icon-btn" data-nav="voice-home">‹</button>
-              <div class="title-block"><h2>Isi Voice</h2><div class="sub">Lengkapi detail voice Anda</div></div>
+              <div class="title-block"><h2>Isi Voice</h2><div class="sub">Form sederhana — lengkapi detail Anda</div></div>
               <div style="width:34px"></div>
             </div>
             <div class="content-scroll">
@@ -620,19 +488,26 @@
               </div>
               <div class="field">
                 <label>Detail Voice</label>
-                <textarea id="f-detail" placeholder="Jelaskan kondisi/hambatan yang terjadi secara spesifik dan jelas. Judul voice akan dibuat otomatis dari detail ini."></textarea>
+                <textarea id="f-detail" placeholder="Jelaskan kondisi/hambatan yang terjadi secara spesifik dan jelas."></textarea>
                 <div class="field-error" id="err-detail">Detail voice wajib diisi.</div>
               </div>
               <div class="field">
-                <label>Bukti Foto <span class="req">*wajib</span></label>
+                <label>Foto <span class="req">*wajib</span></label>
                 <label class="photo-upload" id="photo-label">
                   📷 Tambah Foto — JPG, PNG (Maks. 5 MB)
                   <input type="file" id="f-photo" accept="image/*" style="display:none">
                 </label>
                 <div class="photo-preview" id="photo-preview"><img id="photo-img" src=""></div>
-                <div class="field-error" id="err-photo">Bukti foto wajib dilampirkan.</div>
+                <div class="field-error" id="err-photo">Foto wajib dilampirkan.</div>
               </div>
-              <button class="btn btn-primary" id="btn-selesai-form">Selesai</button>
+              <div class="field">
+                <label>Identity Preference</label>
+                <div class="segmented" id="seg-identity">
+                  <button class="active" data-val="ya">Ya (Open Identity)</button>
+                  <button data-val="tidak">Tidak (Anonim)</button>
+                </div>
+              </div>
+              <button class="btn btn-primary" id="btn-selesai-form">Review Voice</button>
             </div>
           </div>
 
@@ -640,36 +515,58 @@
           <div class="screen" id="screen-preview">
             <div class="app-header">
               <button class="icon-btn" data-nav="isi-voice">‹</button>
-              <div class="title-block"><h2>Preview Voice</h2><div class="sub">Periksa kembali sebelum dikirim</div></div>
+              <div class="title-block"><h2>Review Preview</h2><div class="sub">Periksa kembali sebelum dikirim</div></div>
               <div style="width:34px"></div>
             </div>
             <div class="content-scroll">
               <div class="notice-ok">✅ Mohon periksa kembali data Anda. Pastikan sudah sesuai sebelum dikirim.</div>
               <img class="preview-photo" id="preview-photo" style="display:none">
               <div class="preview-list" id="preview-list"></div>
-              <div class="field" id="preview-identity-field">
-                <label>Tampilkan Identitas Saya</label>
-                <div class="segmented" id="seg-identity">
-                  <button data-val="ya">Ya (Open Identity)</button>
-                  <button data-val="tidak">Tidak (Anonim)</button>
-                </div>
-              </div>
-              <div class="field" id="preview-agree-field" style="display:none;">
-                <label class="checkbox-row" style="display:flex;">
-                  <input type="checkbox" id="f-agree">
-                  <span>Saya menyatakan bahwa informasi yang saya sampaikan adalah benar / fakta, terutama jika menyangkut pihak lain.</span>
-                </label>
-                <div class="field-error" id="err-agree">Anda perlu menyetujui pernyataan ini.</div>
-              </div>
               <div class="back-note">ℹ️ Anda masih bisa kembali (Back) untuk merevisi data jika diperlukan.</div>
               <div class="btn-row">
                 <button class="btn btn-ghost" data-nav="isi-voice">Back</button>
-                <button class="btn btn-primary" id="btn-kirim-voice">📨 Kirim Voice</button>
+                <button class="btn btn-primary" id="btn-kirim-voice">📨 Submit Voice</button>
               </div>
             </div>
           </div>
 
-          <!-- 6. Riwayat (list) -->
+          <!-- 6. AI Processing -->
+          <div class="screen" id="screen-ai-processing">
+            <div class="app-header">
+              <div class="title-block"><h2>Memproses Voice</h2><div class="sub">Sistem sedang menganalisis voice Anda</div></div>
+            </div>
+            <div class="content-scroll">
+              <div class="ai-processing-box">
+                <div class="ai-step" id="ai-step-1">
+                  <div class="ic">🧠</div>
+                  <div>
+                    <div class="tt">AI Analisis Konten</div>
+                    <div class="dd">Memahami isi voice, cek kelengkapan informasi, ekstrak detail lokasi…</div>
+                    <div class="rr" id="ai-res-1"></div>
+                  </div>
+                </div>
+                <div class="ai-step" id="ai-step-2">
+                  <div class="ic">🧭</div>
+                  <div>
+                    <div class="tt">AI Auto Routing ke PIC</div>
+                    <div class="dd">Menentukan PIC paling tepat berdasarkan kategori, lokasi, &amp; beban kerja…</div>
+                    <div class="rr" id="ai-res-2"></div>
+                  </div>
+                </div>
+                <div class="ai-step" id="ai-step-3">
+                  <div class="ic">📊</div>
+                  <div>
+                    <div class="tt">AI Klasifikasi Severity</div>
+                    <div class="dd">Menentukan tingkat severity voice (Low / Medium / High / Critical)…</div>
+                    <div class="rr" id="ai-res-3"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="ai-skip"><a id="ai-skip-link">Lewati animasi ⏭</a></div>
+            </div>
+          </div>
+
+          <!-- 7. Riwayat (list) -->
           <div class="screen" id="screen-riwayat">
             <div class="app-header">
               <button class="icon-btn" data-nav="voice-home">‹</button>
@@ -679,20 +576,20 @@
             <div class="content-scroll">
               <div class="filter-row" id="filter-row">
                 <div class="chip active" data-filter="semua">Semua</div>
-                <div class="chip c-warn" data-filter="menunggu">Menunggu Respon</div>
-                <div class="chip c-klar" data-filter="klarifikasi">Butuh Klarifikasi</div>
-                <div class="chip c-proc" data-filter="diproses">Diproses</div>
-                <div class="chip c-done" data-filter="selesai">Selesai</div>
+                <div class="chip c-open" data-filter="open">Open</div>
+                <div class="chip c-verif" data-filter="verification">In Verification</div>
+                <div class="chip c-prog" data-filter="progress">In Progress</div>
+                <div class="chip c-closed" data-filter="closed">Closed</div>
               </div>
               <div id="voice-list"></div>
             </div>
           </div>
 
-          <!-- 7. Detail / Tracking -->
+          <!-- 8. Detail / Tracking -->
           <div class="screen" id="screen-detail">
             <div class="app-header">
               <button class="icon-btn" data-nav="riwayat">‹</button>
-              <div class="title-block"><h2>Tracking Voice</h2><div class="sub">Detail &amp; progres voice</div></div>
+              <div class="title-block"><h2>Pantau Progress</h2><div class="sub">Detail &amp; progres voice</div></div>
               <div style="width:34px"></div>
             </div>
             <div class="content-scroll" id="detail-content"></div>
@@ -702,23 +599,54 @@
       </div>
     </div>
 
+    <div class="browser" id="pic-wrap" style="display:none;">
+      <div class="browser-chrome">
+        <div class="chrome-dot" style="background:#ff5f57;"></div>
+        <div class="chrome-dot" style="background:#febc2e;"></div>
+        <div class="chrome-dot" style="background:#28c840;"></div>
+        <div class="browser-addr">🔒 care-admin.tmmin.co.id/voice</div>
+      </div>
+      <div class="browser-screen">
+        <div class="pic-topbar">
+          <div class="title-block"><h2>Responder / PIC Dashboard</h2><div class="sub">Kelola &amp; tindak lanjuti voice masuk</div></div>
+          <button class="icon-btn">🔔<span class="badge" id="pic-notif-count">0</span></button>
+        </div>
+        <div class="pic-filters">
+          <div class="filter-row" id="pic-filter-row">
+            <div class="chip active" data-picfilter="semua">Semua</div>
+            <div class="chip c-open" data-picfilter="open">Open</div>
+            <div class="chip c-verif" data-picfilter="verification">In Verification</div>
+            <div class="chip c-prog" data-picfilter="progress">In Progress</div>
+            <div class="chip c-closed" data-picfilter="closed">Closed</div>
+          </div>
+        </div>
+        <div class="pic-body">
+          <div class="pic-list-col" id="pic-list"></div>
+          <div class="pic-detail-col" id="pic-detail"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="side-note">
-      <h3>Legenda status</h3>
-      <div class="leg"><div class="leg-dot" style="background:#e0263d"></div>Menunggu Respon — belum ditanggapi PIC</div>
-      <div class="leg"><div class="leg-dot" style="background:#f5821f"></div>Butuh Klarifikasi — PIC minta info tambahan</div>
-      <div class="leg"><div class="leg-dot" style="background:#2b57c9"></div>Diproses — sedang ditindaklanjuti PIC</div>
-      <div class="leg"><div class="leg-dot" style="background:#1f9d55"></div>Selesai — tindak lanjut tuntas, menunggu rating</div>
-      <h3 style="margin-top:16px;">Auto-routing kategori</h3>
-      <div class="leg">🧑‍💼 Kesulitan Kerja → Manager Area</div>
-      <div class="leg">🏬 Fasilitas Shop → Manager Area</div>
-      <div class="leg">🏭 Fasilitas Plant → PAD</div>
-      <div class="leg">🔒 Private → Committee</div>
-      <h3 style="margin-top:16px;">Isi Voice disederhanakan</h3>
-      <div class="leg">📍 Detail Lokasi wajib &amp; dicek kelengkapannya oleh AI</div>
-      <div class="leg">📝 Judul dibuat otomatis dari Detail Voice</div>
-      <div class="leg">📸 Bukti Foto wajib diunggah</div>
-      <div class="leg">👤 Identitas &amp; pernyataan fakta baru ditanyakan di Preview, setelah kategori terdeteksi</div>
-      <p style="margin-top:12px;">Ini adalah prototipe front-end statis (data tersimpan di memori browser). AI classification, deteksi kelengkapan lokasi, &amp; judul otomatis disimulasikan dengan aturan kata kunci sederhana untuk mendemokan alur.</p>
+      <h3>Cara demo</h3>
+      <ol>
+        <li>Sebagai <b>Pelapor</b>, buat voice baru (Buat Voice → isi form → review → submit).</li>
+        <li>Lihat animasi AI merutekan voice, lalu status awalnya <b>OPEN</b>.</li>
+        <li>Beralih ke <b>Responder / PIC</b> — voice baru muncul di kolom kiri. Klik untuk buka &amp; ambil tindakan.</li>
+        <li>Proses melalui status hingga <b>Closed</b> (wajib unggah foto bukti saat menutup).</li>
+        <li>Kembali ke <b>Pelapor</b> → buka Riwayat → beri rating. Rating 1–2 akan menawarkan opsi reopen.</li>
+      </ol>
+      <h3 style="margin-top:16px;">Legenda status</h3>
+      <div class="leg"><div class="leg-dot" style="background:#e0263d"></div>Open — menunggu tindakan PIC</div>
+      <div class="leg"><div class="leg-dot" style="background:#c98a00"></div>In Verification — klarifikasi/penugasan berjalan</div>
+      <div class="leg"><div class="leg-dot" style="background:#2b57c9"></div>In Progress — sedang ditangani PIC</div>
+      <div class="leg"><div class="leg-dot" style="background:#1f9d55"></div>Closed — tuntas, menunggu rating</div>
+      <h3 style="margin-top:16px;">Legenda severity (AI)</h3>
+      <div class="leg"><div class="leg-dot" style="background:#1f9d55"></div>Low</div>
+      <div class="leg"><div class="leg-dot" style="background:#c98a00"></div>Medium</div>
+      <div class="leg"><div class="leg-dot" style="background:#f5821f"></div>High</div>
+      <div class="leg"><div class="leg-dot" style="background:#8f1230"></div>Critical</div>
+      <p style="margin-top:12px;">Prototipe front-end statis (data di memori browser). AI content analysis, auto-routing PIC (kategori + beban kerja), dan klasifikasi severity disimulasikan dengan aturan sederhana untuk mendemokan alur end-to-end.</p>
     </div>
   </div>
 
@@ -729,74 +657,66 @@
   "use strict";
 
   var STEPS = [
-    {key:"mytmmin", num:1, label:"CARE di myTMMIN"},
-    {key:"care-home", num:2, label:"Beranda CARE"},
-    {key:"voice-home", num:3, label:"Beranda Voice"},
-    {key:"isi-voice", num:4, label:"Isi Voice"},
-    {key:"preview", num:5, label:"Preview & Kirim"},
-    {key:"riwayat", num:6, label:"Tracking Progress"}
+    {key:"mytmmin", num:1, label:"Akses CARE Voice"},
+    {key:"voice-home", num:2, label:"Buat Voice"},
+    {key:"isi-voice", num:3, label:"Isi Form Voice"},
+    {key:"preview", num:4, label:"Review & Submit"},
+    {key:"ai-processing", num:5, label:"AI Processing"},
+    {key:"riwayat", num:6, label:"Pantau Progress"},
+    {key:"detail", num:7, label:"Rating & Riwayat"}
   ];
 
   var STATUS = {
-    menunggu:{label:"Menunggu Respon", cls:"s-warn"},
-    klarifikasi:{label:"Butuh Klarifikasi", cls:"s-klar"},
-    diproses:{label:"Diproses", cls:"s-proc"},
-    selesai:{label:"Selesai", cls:"s-done"}
+    open:{label:"Open", cls:"s-open"},
+    verification:{label:"In Verification", cls:"s-verif"},
+    progress:{label:"In Progress", cls:"s-prog"},
+    closed:{label:"Closed", cls:"s-closed"}
   };
+  var STATUS_ORDER = ["open","verification","progress","closed"];
 
-  var seq = 5;
-  var voices = [
-    mk("VO-2025-0001","Toilet shop lantai 2 bocor","Air menggenang di depan toilet shop lantai 2, licin dan berbahaya.","KRW 1","selesai","Fasilitas Shop","2025-05-02T08:10:00", true),
-    mk("VO-2025-0002","Jadwal lembur mendadak tanpa info","Info lembur baru diberikan H-1, sulit atur jadwal pribadi.","KRW 2","diproses","Kesulitan Kerja","2025-05-04T09:20:00", false),
-    mk("VO-2025-0003","AC ruang istirahat mati","AC di ruang istirahat plant tidak dingin sejak minggu lalu.","STR 1","diproses","Fasilitas Plant","2025-05-05T13:00:00", true),
-    mk("VO-2025-0004","Rekan kerja sering intimidasi","Ada rekan kerja yang bersikap intimidatif ke anggota tim lain.","KRW 3","klarifikasi","Private","2025-05-06T15:40:00", false),
-    mk("VO-2025-0005","Lampu area line 2 redup","Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.","KRW 1","diproses","Fasilitas Plant","2025-05-12T09:15:00", true)
+  var PIC_ROSTER = [
+    {name:"Andi", kategori:["Kesulitan Kerja","Fasilitas Plant"], workload:2},
+    {name:"Rina", kategori:["Kesulitan Kerja"], workload:1},
+    {name:"Sari", kategori:["Fasilitas Shop"], workload:3},
+    {name:"Budi", kategori:["Fasilitas Shop"], workload:1},
+    {name:"Joko", kategori:["Fasilitas Plant"], workload:0},
+    {name:"Tim Committee", kategori:["Private"], workload:1}
   ];
-  voices[0].rating = 5;
-  voices[4].lokasi = "Depan Line 2, Dekat Mesin X";
 
   var PLACEHOLDER_PHOTO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='240'%3E%3Crect width='100%25' height='100%25' fill='%23e4e7ee'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%235b6172' text-anchor='middle' dominant-baseline='middle'%3EContoh Foto%3C/text%3E%3C/svg%3E";
 
-  function mk(id, judul, detail, area, status, kategori, createdAt, identity){
-    var created = new Date(createdAt);
-    var tl = [{ title:"Voice dikirim ("+(identity?"Open Identity":"Anonim")+")", who:"Oleh Anda", time:created, done:true }];
-    if(status!=="menunggu"){
-      tl.push({ title:"Diterima oleh PIC", who:"PIC: "+picFor(kategori), time:addHrs(created,1), done:true });
-    }
-    if(status==="klarifikasi"){
-      tl.push({ title:"PIC meminta klarifikasi", who:"PIC: "+picFor(kategori), time:addHrs(created,3), done:true, note:"Mohon lampirkan info/foto tambahan terkait lokasi kejadian." });
-    }
-    if(status==="diproses"||status==="selesai"){
-      tl.push({ title:"Diproses oleh PIC", who:"PIC: "+picFor(kategori), time:addHrs(created,4), done:true });
-    }
-    if(status==="selesai"){
-      tl.push({ title:"Selesai", who:"Tindak lanjut selesai", time:addHrs(created,26), done:true });
-    }
-    return {
-      id, judul, detail, area, status, kategori,
-      severity: severityFor(judul+" "+detail),
-      identity: identity, lokasi:"", photo:null,
-      created, timeline: tl, rating:0, feedback:""
-    };
+  function seedRoster(){
+    PIC_ROSTER.forEach(function(p){
+      var base = {Andi:2, Rina:1, Sari:3, Budi:1, Joko:0, "Tim Committee":1};
+      p.workload = base[p.name] !== undefined ? base[p.name] : 0;
+    });
   }
-  function addHrs(d,h){ var n=new Date(d); n.setHours(n.getHours()+h); return n; }
+
+  function routePIC(kategori){
+    var candidates = PIC_ROSTER.filter(function(p){ return p.kategori.indexOf(kategori) !== -1; });
+    if(!candidates.length) candidates = PIC_ROSTER.slice();
+    candidates.sort(function(a,b){ return a.workload - b.workload; });
+    var chosen = candidates[0];
+    chosen.workload += 1;
+    return chosen.name;
+  }
+
   function picFor(kategori){
-    if(kategori==="Kesulitan Kerja") return "Andi (Manager Area)";
-    if(kategori==="Fasilitas Shop") return "Sari (Manager Area)";
-    if(kategori==="Fasilitas Plant") return "Andi (PAD)";
-    if(kategori==="Private") return "Tim Committee";
-    return "PIC Terkait";
+    var c = PIC_ROSTER.filter(function(p){ return p.kategori.indexOf(kategori) !== -1; });
+    return c.length ? c[0].name : "PIC Umum";
   }
+
   function severityFor(text){
-    text = text.toLowerCase();
-    if(/bahaya|celaka|rusak parah|urgent|bocor|intimidasi|pelecehan/.test(text)) return "Tinggi";
-    if(/rusak|tidak berfungsi|mati|redup|bocor kecil/.test(text)) return "Sedang";
-    return "Rendah";
+    text = (text||"").toLowerCase();
+    if(/kebakaran|meledak|ledakan|nyawa|fatal/.test(text)) return "Critical";
+    if(/bahaya|celaka|kecelakaan|intimidasi|pelecehan|bocor|rusak parah|urgent/.test(text)) return "High";
+    if(/rusak|tidak berfungsi|mati|redup|terganggu|tidak nyaman/.test(text)) return "Medium";
+    return "Low";
   }
   function classify(text){
-    text = text.toLowerCase();
+    text = (text||"").toLowerCase();
     if(/intimidasi|pelecehan|bully|pribadi|personal|ancam/.test(text)) return "Private";
-    if(/toilet|kantin|locker|loker|shop|musholla|ruang istirahat/.test(text)) return "Fasilitas Shop";
+    if(/toilet|kantin|locker|loker|shop|musholla|ruang istirahat|wastafel/.test(text)) return "Fasilitas Shop";
     if(/gaji|lembur|shift|atasan|beban kerja|jam kerja|training/.test(text)) return "Kesulitan Kerja";
     return "Fasilitas Plant";
   }
@@ -811,29 +731,96 @@
   function locationCheck(text){
     text = (text||"").trim();
     var issues = [];
-    if(text.length < 8){
-      issues.push("Detail lokasi terlalu singkat, tambahkan informasi lebih spesifik.");
-    }
+    if(text.length < 8){ issues.push("Detail lokasi terlalu singkat, tambahkan informasi lebih spesifik."); }
     var hasLandmark = /line\s?\d|mesin|pilar|kolom|rak|rack|panel|pintu|gate|tiang|dinding|tangga|meja|loket|area\s?\d|krw|str/i.test(text);
     var hasDirection = /depan|belakang|samping|sebelah|dekat|atas|bawah|kiri|kanan|antara/i.test(text);
-    if(!hasLandmark){
-      issues.push("Sebutkan titik acuan yang jelas, contoh: dekat mesin X, dekat Line 2, atau dekat pilar A3.");
-    }
-    if(!hasDirection){
-      issues.push("Sebutkan posisi relatif seperti depan/belakang/samping/dekat agar PIC mudah menemukan lokasi.");
-    }
+    if(!hasLandmark){ issues.push("Sebutkan titik acuan yang jelas, contoh: dekat mesin X, dekat Line 2, atau dekat pilar A3."); }
+    if(!hasDirection){ issues.push("Sebutkan posisi relatif seperti depan/belakang/samping/dekat agar PIC mudah menemukan lokasi."); }
     return { ok: issues.length===0, issues: issues };
   }
-
   function fmtDate(d){
     var months=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"];
     var hh = d.getHours().toString().padStart(2,"0");
     var mm = d.getMinutes().toString().padStart(2,"0");
     return d.getDate()+" "+months[d.getMonth()]+" "+d.getFullYear()+" "+hh+":"+mm;
   }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; });
+  }
+  function addHrs(d,h){ var n=new Date(d); n.setHours(n.getHours()+h); return n; }
 
-  var state = { screen:"mytmmin", history:[], filter:"semua", currentId:null, draft:null };
+  var seq = 6;
+  var voices = [];
 
+  function mk(id, judul, detail, area, lokasi, status, kategori, createdAt, identity, pic, extraTl, rating, reopened){
+    var created = new Date(createdAt);
+    var tl = [{ title:"Voice disubmit ("+(identity?"Open Identity":"Anonim")+")", who:"Oleh Pelapor", time:created, done:true }];
+    tl.push({ title:"AI menganalisis & merutekan ke "+pic, who:"Sistem", time:addHrs(created,0), done:true });
+    if(extraTl) tl = tl.concat(extraTl);
+    return {
+      id:id, judul:judul, detail:detail, area:area, lokasi:lokasi,
+      status:status, kategori:kategori, severity:severityFor(judul+" "+detail),
+      identity:identity, photo:PLACEHOLDER_PHOTO, closePhoto:null, pic:pic,
+      created:created, timeline:tl, rating:rating||0, feedback:"", reopened:!!reopened
+    };
+  }
+
+  function buildSeed(){
+    seedRoster();
+    voices = [
+      mk("VO-2025-0001","Toilet shop lantai 2 bocor","Air menggenang di depan toilet shop lantai 2, licin dan berbahaya.","KRW 1","Depan toilet shop lantai 2, dekat tangga","closed","Fasilitas Shop","2025-05-02T08:10:00", true, "Sari", [
+        {title:"PIC mulai menindaklanjuti voice", who:"PIC: Sari", time:addHrs(new Date("2025-05-02T08:10:00"),2), done:true},
+        {title:"Voice ditutup oleh PIC (Closed)", who:"PIC: Sari", time:addHrs(new Date("2025-05-02T08:10:00"),20), done:true, note:"Sudah diperbaiki, saluran air dibersihkan."}
+      ], 5, false),
+      mk("VO-2025-0002","Jadwal lembur mendadak tanpa info","Info lembur baru diberikan H-1, sulit atur jadwal pribadi.","KRW 2","Papan pengumuman dekat pintu masuk Line 3","progress","Kesulitan Kerja","2025-05-04T09:20:00", false, "Rina", [
+        {title:"PIC mulai menindaklanjuti voice", who:"PIC: Rina", time:addHrs(new Date("2025-05-04T09:20:00"),3), done:true},
+        {title:"Update progress", who:"PIC: Rina", time:addHrs(new Date("2025-05-04T09:20:00"),20), done:true, note:"Sedang koordinasi dengan supervisor shift terkait H-1 notice."}
+      ], 0, false),
+      mk("VO-2025-0003","AC ruang istirahat mati","AC di ruang istirahat plant tidak dingin sejak minggu lalu.","STR 1","Ruang istirahat plant, dekat pintu belakang","verification","Fasilitas Plant","2025-05-05T13:00:00", true, "Joko", [
+        {title:"PIC menanyakan klarifikasi", who:"PIC: Joko", time:addHrs(new Date("2025-05-05T13:00:00"),2), done:true, note:"Sejak kapan tepatnya AC mati total? Apakah ada suara aneh dari unit AC?"}
+      ], 0, false),
+      mk("VO-2025-0004","Rekan kerja sering intimidasi","Ada rekan kerja yang bersikap intimidatif ke anggota tim lain.","KRW 3","Area kerja Line 4, dekat pilar B2","verification","Private","2025-05-06T15:40:00", false, "Tim Committee", [
+        {title:"Voice ditugaskan ke Tim Committee", who:"Sistem", time:addHrs(new Date("2025-05-06T15:40:00"),1), done:true}
+      ], 0, false),
+      mk("VO-2025-0006","Kran wastafel shop rusak total","Kran wastafel di shop rusak total dan airnya mengalir terus tidak bisa dimatikan.","KRW 1","Wastafel shop, dekat pintu masuk","progress","Fasilitas Shop","2025-04-20T10:00:00", true, "Budi", [
+        {title:"PIC mulai menindaklanjuti voice", who:"PIC: Budi", time:addHrs(new Date("2025-04-20T10:00:00"),3), done:true},
+        {title:"Voice ditutup oleh PIC (Closed)", who:"PIC: Budi", time:addHrs(new Date("2025-04-20T10:00:00"),22), done:true, note:"Kran sudah diganti."},
+        {title:"Rating 2★ diberikan pelapor", who:"Oleh Pelapor", time:addHrs(new Date("2025-04-20T10:00:00"),30), done:true, note:"Kran baru bocor lagi setelah 2 hari."},
+        {title:"Voice dibuka kembali (Reopened)", who:"Oleh Pelapor", time:addHrs(new Date("2025-04-20T10:00:00"),30), done:true}
+      ], 2, true),
+      mk("VO-2025-0005","Lampu area line 2 redup","Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.","KRW 1","Depan Line 2, Dekat Mesin X","open","Fasilitas Plant","2025-05-12T09:15:00", true, "Andi", [], 0, false)
+    ];
+    voices[5].feedback = "Kran baru bocor lagi setelah 2 hari.";
+  }
+  buildSeed();
+
+  var state = { screen:"mytmmin", role:"pelapor", filter:"semua", picFilter:"semua", currentId:null, picCurrentId:null, draft:null, aiTimers:[] };
+
+  /* ---------- Role switch ---------- */
+  document.getElementById("role-tabs").addEventListener("click", function(e){
+    var btn = e.target.closest(".role-tab");
+    if(!btn) return;
+    setRole(btn.dataset.role);
+  });
+  function setRole(role){
+    state.role = role;
+    document.querySelectorAll(".role-tab").forEach(function(b){ b.classList.toggle("active", b.dataset.role===role); });
+    document.getElementById("pelapor-wrap").style.display = role === "pelapor" ? "block" : "none";
+    document.getElementById("pic-wrap").style.display = role === "pic" ? "block" : "none";
+    document.getElementById("stepper").style.display = role === "pelapor" ? "flex" : "none";
+    document.getElementById("pic-hint").style.display = role === "pic" ? "flex" : "none";
+    if(role === "pic"){
+      if(!state.picCurrentId){
+        var openOne = voices.find(function(v){ return v.status==="open"; });
+        state.picCurrentId = openOne ? openOne.id : (voices[0] ? voices[0].id : null);
+      }
+      renderPicFilters();
+      renderPicList();
+      renderPicDetail(state.picCurrentId);
+    }
+  }
+
+  /* ---------- Pelapor stepper ---------- */
   var stepperEl = document.getElementById("stepper");
   STEPS.forEach(function(s){
     var b = document.createElement("div");
@@ -842,6 +829,7 @@
     b.innerHTML = '<span class="num">'+s.num+'</span><span>'+s.label+'</span>';
     b.addEventListener("click", function(){
       if(s.key==="preview" && !state.draft){ ensureDraft(); }
+      if(s.key==="detail" && !state.currentId){ state.currentId = voices[0].id; }
       goTo(s.key);
     });
     stepperEl.appendChild(b);
@@ -849,27 +837,22 @@
 
   function ensureDraft(){
     var detail = "Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.";
-    var kategori = classify(detail);
     state.draft = {
       area:"KRW 1", lokasi:"Depan Line 2, Dekat Mesin X",
-      detail: detail, judul: generateTitle(detail), photo: PLACEHOLDER_PHOTO,
-      kategori: kategori, severity: severityFor(detail),
-      identity: kategori === "Private" ? "tidak" : "ya", agree:false
+      detail: detail, judul: generateTitle(detail), photo: PLACEHOLDER_PHOTO, identity:"ya"
     };
   }
 
   function updateStepper(screen){
-    var map = { "mytmmin":"mytmmin","care-home":"care-home","voice-home":"voice-home",
-      "isi-voice":"isi-voice","preview":"preview","riwayat":"riwayat","detail":"riwayat" };
+    var map = { "mytmmin":"mytmmin","care-home":"mytmmin","voice-home":"voice-home",
+      "isi-voice":"isi-voice","preview":"preview","ai-processing":"ai-processing","riwayat":"riwayat","detail":"detail" };
     var active = map[screen] || "mytmmin";
-    document.querySelectorAll(".step-btn").forEach(function(b){
-      b.classList.toggle("active", b.dataset.step === active);
-    });
+    document.querySelectorAll(".step-btn").forEach(function(b){ b.classList.toggle("active", b.dataset.step === active); });
   }
 
   function goTo(screen, opts){
     opts = opts || {};
-    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+    document.querySelectorAll("#pelapor-wrap .screen").forEach(function(s){ s.classList.remove("active"); });
     var el = document.getElementById("screen-"+screen);
     if(el) el.classList.add("active");
     state.screen = screen;
@@ -885,6 +868,7 @@
     if(screen === "detail" && state.currentId){ renderDetail(state.currentId); }
     if(screen === "preview"){ renderPreview(); }
     if(screen === "isi-voice" && !opts.keep){ resetForm(); }
+    if(screen === "ai-processing"){ runAIProcessing(); }
   }
 
   document.body.addEventListener("click", function(e){
@@ -903,23 +887,19 @@
     t.textContent = msg;
     t.classList.add("show");
     clearTimeout(t._timer);
-    t._timer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+    t._timer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
   }
 
   /* ---- Form (Isi Voice) ---- */
   var photoData = null;
+  var identityVal = "ya";
 
   document.getElementById("seg-identity").addEventListener("click", function(e){
     var btn = e.target.closest("button");
     if(!btn) return;
     document.querySelectorAll("#seg-identity button").forEach(function(b){ b.classList.remove("active"); });
     btn.classList.add("active");
-    if(state.draft) state.draft.identity = btn.dataset.val;
-  });
-
-  document.getElementById("f-agree").addEventListener("change", function(e){
-    if(state.draft) state.draft.agree = e.target.checked;
-    document.getElementById("err-agree").classList.remove("show");
+    identityVal = btn.dataset.val;
   });
 
   function renderLocationCheck(check){
@@ -933,7 +913,6 @@
         check.issues.map(function(i){ return "<li>"+escapeHtml(i)+"</li>"; }).join("")+"</ul>";
     }
   }
-
   document.getElementById("btn-ai-lokasi").addEventListener("click", function(){
     renderLocationCheck(locationCheck(document.getElementById("f-lokasi").value.trim()));
   });
@@ -961,8 +940,10 @@
     document.getElementById("ai-hint-box").classList.remove("show","ok");
     document.getElementById("ai-hint-box").innerHTML = "";
     document.getElementById("photo-preview").classList.remove("show");
-    document.querySelectorAll(".field-error").forEach(function(el){ el.classList.remove("show"); });
+    document.querySelectorAll("#screen-isi-voice .field-error").forEach(function(el){ el.classList.remove("show"); });
     photoData = null;
+    identityVal = "ya";
+    document.querySelectorAll("#seg-identity button").forEach(function(b){ b.classList.toggle("active", b.dataset.val==="ya"); });
   }
 
   document.getElementById("btn-selesai-form").addEventListener("click", function(){
@@ -984,12 +965,7 @@
       return;
     }
 
-    var kategori = classify(detail);
-    state.draft = {
-      area: area, lokasi: lokasi, detail: detail, photo: photoData,
-      kategori: kategori, severity: severityFor(detail), judul: generateTitle(detail),
-      identity: kategori === "Private" ? "tidak" : "ya", agree: false
-    };
+    state.draft = { area:area, lokasi:lokasi, detail:detail, photo:photoData, judul:generateTitle(detail), identity:identityVal };
     goTo("preview");
   });
 
@@ -999,52 +975,108 @@
     var box = document.getElementById("preview-list");
     box.innerHTML = [
       row("Area", d.area), row("Detail Lokasi", d.lokasi),
-      row("Judul (Auto)", d.judul), row("Kategori (Auto)", d.kategori),
-      row("Severity (Auto)", d.severity), row("Detail Voice", d.detail)
+      row("Detail Voice", d.detail),
+      row("Identity Preference", d.identity==="ya" ? "Open Identity" : "Anonim")
     ].join("");
     var img = document.getElementById("preview-photo");
     img.src = d.photo; img.style.display = "block";
-
-    document.querySelectorAll("#seg-identity button").forEach(function(b){
-      b.classList.toggle("active", b.dataset.val === d.identity);
-    });
-    document.getElementById("preview-agree-field").style.display = d.kategori === "Private" ? "block" : "none";
-    document.getElementById("f-agree").checked = !!d.agree;
-    document.getElementById("err-agree").classList.remove("show");
   }
   function row(k,v){
     return '<div class="preview-row"><div class="k">'+k+'</div><div class="v">'+escapeHtml(v)+'</div></div>';
   }
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; });
-  }
 
   document.getElementById("btn-kirim-voice").addEventListener("click", function(){
+    if(!state.draft) return;
+    goTo("ai-processing");
+  });
+
+  /* ---- AI Processing screen ---- */
+  function runAIProcessing(){
+    state.aiTimers.forEach(clearTimeout);
+    state.aiTimers = [];
+    ["ai-step-1","ai-step-2","ai-step-3"].forEach(function(id){
+      document.getElementById(id).classList.remove("active","done");
+    });
+    document.getElementById("ai-res-1").textContent = "";
+    document.getElementById("ai-res-2").textContent = "";
+    document.getElementById("ai-res-3").textContent = "";
+
     var d = state.draft;
-    if(!d) return;
-    if(d.kategori === "Private" && !d.agree){
-      document.getElementById("err-agree").classList.add("show");
-      showToast("Mohon setujui pernyataan fakta terlebih dahulu.");
-      return;
+    var kategori = classify(d.detail);
+    var severity = severityFor(d.detail);
+
+    function step1(){
+      document.getElementById("ai-step-1").classList.add("active");
     }
+    function step1done(){
+      document.getElementById("ai-step-1").classList.add("done");
+      document.getElementById("ai-res-1").textContent = "✅ Konten dipahami, informasi lengkap. Kategori terdeteksi: "+kategori+".";
+      document.getElementById("ai-step-2").classList.add("active");
+    }
+    function step2done(){
+      var pic = routePIC(kategori);
+      state.draft.kategori = kategori;
+      state.draft.pic = pic;
+      document.getElementById("ai-step-2").classList.add("done");
+      document.getElementById("ai-res-2").textContent = "✅ Diteruskan ke "+pic+" ("+kategori+").";
+      document.getElementById("ai-step-3").classList.add("active");
+    }
+    function step3done(){
+      state.draft.severity = severity;
+      document.getElementById("ai-step-3").classList.add("done");
+      document.getElementById("ai-res-3").textContent = "✅ Severity: "+severity+".";
+      finalizeSubmission();
+    }
+    step1();
+    state.aiTimers.push(setTimeout(step1done, 550));
+    state.aiTimers.push(setTimeout(step2done, 1200));
+    state.aiTimers.push(setTimeout(step3done, 1850));
+    state.aiTimers.push(setTimeout(function(){
+      if(state.screen === "ai-processing") goTo("detail");
+    }, 2450));
+  }
+  document.getElementById("ai-skip-link").addEventListener("click", function(){
+    state.aiTimers.forEach(clearTimeout);
+    state.aiTimers = [];
+    var d = state.draft;
+    var kategori = d.kategori || classify(d.detail);
+    var pic = d.pic || routePIC(kategori);
+    var severity = d.severity || severityFor(d.detail);
+    document.getElementById("ai-step-1").classList.add("done");
+    document.getElementById("ai-res-1").textContent = "✅ Konten dipahami, informasi lengkap. Kategori terdeteksi: "+kategori+".";
+    document.getElementById("ai-step-2").classList.add("done");
+    document.getElementById("ai-res-2").textContent = "✅ Diteruskan ke "+pic+" ("+kategori+").";
+    document.getElementById("ai-step-3").classList.add("done");
+    document.getElementById("ai-res-3").textContent = "✅ Severity: "+severity+".";
+    state.draft.kategori = kategori; state.draft.pic = pic; state.draft.severity = severity;
+    finalizeSubmission();
+    goTo("detail");
+  });
+
+  function finalizeSubmission(){
+    var d = state.draft;
+    if(!d || d._submitted) return;
+    d._submitted = true;
     seq += 1;
     var idNum = String(seq).padStart(4,"0");
     var now = new Date();
     var v = {
       id: "VO-2025-"+idNum,
-      judul: d.judul, detail: d.detail, area: d.area,
-      status: "menunggu", kategori: d.kategori, severity: d.severity,
-      identity: d.identity==="ya", lokasi: d.lokasi, photo: d.photo,
+      judul: d.judul, detail: d.detail, area: d.area, lokasi: d.lokasi,
+      status: "open", kategori: d.kategori, severity: d.severity, pic: d.pic,
+      identity: d.identity==="ya", photo: d.photo, closePhoto:null,
       created: now,
-      timeline: [{ title:"Voice dikirim ("+(d.identity==="ya"?"Open Identity":"Anonim")+")", who:"Oleh Anda", time: now, done:true }],
-      rating:0, feedback:""
+      timeline: [
+        { title:"Voice disubmit ("+(d.identity==="ya"?"Open Identity":"Anonim")+")", who:"Oleh Pelapor", time: now, done:true },
+        { title:"AI menganalisis & merutekan ke "+d.pic, who:"Sistem", time: now, done:true }
+      ],
+      rating:0, feedback:"", reopened:false
     };
     voices.unshift(v);
-    state.draft = null;
     state.currentId = v.id;
-    showToast("✅ Voice berhasil dikirim! ID "+v.id);
-    goTo("detail");
-  });
+    state.draft = null;
+    showToast("✅ Voice berhasil dikirim & diteruskan ke "+v.pic+"! ID "+v.id);
+  }
 
   /* ---- Riwayat list ---- */
   function renderFilters(){
@@ -1059,12 +1091,10 @@
     renderFilters();
     renderList();
   });
-
   function filteredVoices(){
     if(state.filter==="semua") return voices;
     return voices.filter(function(v){ return v.status === state.filter; });
   }
-
   function renderList(){
     var list = document.getElementById("voice-list");
     var items = filteredVoices();
@@ -1075,7 +1105,7 @@
     list.innerHTML = items.map(function(v){
       var st = STATUS[v.status];
       return '<div class="voice-item" data-id="'+v.id+'">'+
-        '<div class="top-row"><div class="ttl">'+escapeHtml(v.judul)+'</div>'+
+        '<div class="top-row"><div class="ttl">'+escapeHtml(v.judul)+(v.reopened?'<span class="reopen-tag">Reopened</span>':'')+'</div>'+
         '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
         '<div class="meta">'+escapeHtml(v.area)+' • '+escapeHtml(v.kategori)+'</div>'+
         '<div class="idline">ID: '+v.id+' &middot; '+fmtDate(v.created)+'</div>'+
@@ -1088,17 +1118,38 @@
       });
     });
   }
-
   function renderStats(){
     document.getElementById("stat-total").textContent = voices.length;
-    document.getElementById("stat-warn").textContent = voices.filter(function(v){return v.status==="menunggu";}).length;
-    document.getElementById("stat-klar").textContent = voices.filter(function(v){return v.status==="klarifikasi";}).length;
-    document.getElementById("stat-proc").textContent = voices.filter(function(v){return v.status==="diproses";}).length;
-    document.getElementById("stat-done").textContent = voices.filter(function(v){return v.status==="selesai";}).length;
+    document.getElementById("stat-open").textContent = voices.filter(function(v){return v.status==="open";}).length;
+    document.getElementById("stat-verif").textContent = voices.filter(function(v){return v.status==="verification";}).length;
+    document.getElementById("stat-prog").textContent = voices.filter(function(v){return v.status==="progress";}).length;
+    document.getElementById("stat-closed").textContent = voices.filter(function(v){return v.status==="closed";}).length;
   }
 
-  /* ---- Detail / Tracking ---- */
   function findVoice(id){ return voices.find(function(v){ return v.id===id; }); }
+
+  function statusTrackHtml(status){
+    var idx = STATUS_ORDER.indexOf(status);
+    var parts = [];
+    STATUS_ORDER.forEach(function(key, i){
+      var filled = i <= idx;
+      var isClosed = key === "closed";
+      parts.push('<div class="st-dot '+(filled ? (isClosed?'fill-closed':'fill') : '')+'"></div>');
+      if(i < STATUS_ORDER.length-1){
+        var lineFilled = i < idx;
+        var lineClosed = (i+1) === STATUS_ORDER.length-1 && idx === STATUS_ORDER.length-1;
+        parts.push('<div class="st-line '+(lineFilled ? (lineClosed?'fill-closed':'fill') : '')+'"></div>');
+      }
+    });
+    var labels = STATUS_ORDER.map(function(key,i){
+      return '<span class="'+(i<=idx?'on':'')+'">'+STATUS[key].label+'</span>';
+    }).join("");
+    return '<div class="status-track">'+parts.join("")+'</div><div class="status-labels">'+labels+'</div>';
+  }
+
+  function severityPillClass(sv){
+    return "sv-"+String(sv||"Low").toLowerCase();
+  }
 
   function renderDetail(id){
     var v = findVoice(id);
@@ -1116,39 +1167,38 @@
       '</div>';
     }).join("");
 
-    var photoHtml = v.photo ? '<img class="preview-photo" src="'+v.photo+'">' : '';
-
     var rateHtml = "";
-    if(v.status === "selesai"){
+    if(v.status === "closed"){
       if(v.rating > 0){
         rateHtml = '<div class="rate-box"><h4>Rating Anda</h4>'+
           '<div class="stars">'+[1,2,3,4,5].map(function(n){return '<span class="'+(n<=v.rating?"on":"")+'">★</span>';}).join("")+'</div>'+
           (v.feedback ? '<div class="tl-note">'+escapeHtml(v.feedback)+'</div>' : '') +
           '<div class="rate-done">✓ Terima kasih atas feedback Anda</div></div>';
       } else {
-        rateHtml = '<div class="rate-box"><h4>Berikan rating &amp; feedback</h4>'+
+        rateHtml = '<div class="rate-box" id="rate-box-fresh"><h4>Berikan rating &amp; feedback</h4>'+
           '<div class="stars" id="rate-stars">'+[1,2,3,4,5].map(function(n){return '<span data-n="'+n+'">★</span>';}).join("")+'</div>'+
-          '<textarea id="rate-feedback" placeholder="Ceritakan pengalaman Anda (wajib untuk rating 1-3, opsional untuk 4-5)" style="width:100%;border:1px solid var(--gray-200);border-radius:10px;padding:10px;font-size:12.5px;min-height:70px;font-family:inherit;"></textarea>'+
-          '<div class="field-error" id="err-rate">Mohon isi feedback untuk rating 1-3.</div>'+
+          '<textarea id="rate-feedback" placeholder="Ceritakan pengalaman Anda (wajib untuk rating 1-2, opsional untuk 3-5)" style="width:100%;border:1px solid var(--gray-200);border-radius:10px;padding:10px;font-size:12.5px;min-height:70px;font-family:inherit;"></textarea>'+
+          '<div class="field-error" id="err-rate">Mohon isi feedback untuk rating 1-2.</div>'+
           '<button class="btn btn-primary" id="btn-submit-rate" style="margin-top:10px;">Kirim Rating</button></div>';
       }
     }
 
     box.innerHTML =
       '<div class="detail-card">'+
-        '<div class="tags"><div class="pill">'+escapeHtml(v.kategori)+'</div><div class="pill">Severity: '+escapeHtml(v.severity)+'</div>'+
-        '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
+        '<div class="tags"><div class="pill">'+escapeHtml(v.kategori)+'</div><div class="pill '+severityPillClass(v.severity)+'">Severity: '+escapeHtml(v.severity)+'</div>'+
+        '<div class="status-tag '+st.cls+'">'+st.label+'</div>'+(v.reopened?'<span class="reopen-tag">Reopened</span>':'')+'</div>'+
         '<div class="ttl">'+escapeHtml(v.judul)+'</div>'+
-        '<div class="idrow">ID: '+v.id+' &middot; '+escapeHtml(v.area)+'</div>'+
+        '<div class="idrow">ID: '+v.id+' &middot; '+escapeHtml(v.area)+' &middot; PIC: '+escapeHtml(v.pic||"-")+'</div>'+
         (v.lokasi ? '<div class="idrow" style="margin-top:4px;">📍 '+escapeHtml(v.lokasi)+'</div>' : '') +
         '<div class="idrow" style="margin-top:4px;">👤 '+(v.identity ? "Open Identity" : "Anonim")+'</div>'+
-        (photoHtml ? '<div style="margin-top:10px;">'+photoHtml+'</div>' : '') +
+        (v.photo ? '<div style="margin-top:10px;"><img class="preview-photo" src="'+v.photo+'"></div>' : '') +
         '<div style="margin-top:10px;font-size:12.5px;color:var(--gray-600);">'+escapeHtml(v.detail)+'</div>'+
       '</div>'+
+      '<div class="detail-card">'+statusTrackHtml(v.status)+'</div>'+
       '<div class="detail-card"><div class="timeline">'+tlHtml+'</div></div>'+
       rateHtml;
 
-    if(v.status === "selesai" && v.rating === 0){
+    if(v.status === "closed" && v.rating === 0){
       var chosen = 0;
       var starsEl = document.getElementById("rate-stars");
       starsEl.addEventListener("click", function(e){
@@ -1162,17 +1212,250 @@
       document.getElementById("btn-submit-rate").addEventListener("click", function(){
         if(chosen === 0){ showToast("Pilih rating bintang terlebih dahulu."); return; }
         var fb = document.getElementById("rate-feedback").value.trim();
-        if(chosen <= 3 && !fb){
+        if(chosen <= 2 && !fb){
           document.getElementById("err-rate").classList.add("show");
           return;
         }
         v.rating = chosen;
         v.feedback = fb;
-        showToast("Terima kasih atas rating Anda!");
-        renderDetail(v.id);
+        v.timeline.push({ title:"Rating "+chosen+"★ diberikan pelapor", who:"Oleh Pelapor", time:new Date(), done:true, note: fb || null });
+
+        if(chosen <= 2){
+          renderReopenAsk(v);
+        } else {
+          showToast("Terima kasih atas rating Anda!");
+          renderDetail(v.id);
+        }
       });
     }
   }
+
+  function renderReopenAsk(v){
+    var box = document.getElementById("rate-box-fresh");
+    box.innerHTML = '<div class="reopen-ask">'+
+      '<p>Rating Anda rendah. Apakah Anda ingin membuka kembali (reopen) voice ini agar PIC menindaklanjuti lebih lanjut?</p>'+
+      '<div class="btn-row"><button class="btn btn-primary" id="btn-reopen-ya">Ya, Reopen</button>'+
+      '<button class="btn btn-ghost" id="btn-reopen-tidak">Tidak, Selesai</button></div>'+
+    '</div>';
+    document.getElementById("btn-reopen-ya").addEventListener("click", function(){
+      v.status = "progress";
+      v.reopened = true;
+      v.timeline.push({ title:"Voice dibuka kembali (Reopened)", who:"Oleh Pelapor", time:new Date(), done:true });
+      showToast("Voice dibuka kembali & dikirim ulang ke PIC.");
+      renderDetail(v.id);
+    });
+    document.getElementById("btn-reopen-tidak").addEventListener("click", function(){
+      showToast("Terima kasih atas feedback Anda.");
+      renderDetail(v.id);
+    });
+  }
+
+  /* ================= PIC DASHBOARD ================= */
+  document.getElementById("pic-filter-row").addEventListener("click", function(e){
+    var chip = e.target.closest(".chip");
+    if(!chip) return;
+    document.querySelectorAll("#pic-filter-row .chip").forEach(function(c){ c.classList.remove("active"); });
+    chip.classList.add("active");
+    state.picFilter = chip.dataset.picfilter;
+    renderPicList();
+  });
+  function renderPicFilters(){
+    document.querySelectorAll("#pic-filter-row .chip").forEach(function(c){
+      c.classList.toggle("active", c.dataset.picfilter === state.picFilter);
+    });
+  }
+  function picFilteredVoices(){
+    if(state.picFilter==="semua") return voices;
+    return voices.filter(function(v){ return v.status === state.picFilter; });
+  }
+  function renderPicList(){
+    document.getElementById("pic-notif-count").textContent = voices.filter(function(v){ return v.status==="open"; }).length;
+    var list = document.getElementById("pic-list");
+    var items = picFilteredVoices();
+    if(items.length===0){
+      list.innerHTML = '<div class="empty-state">Tidak ada voice pada status ini.</div>';
+      return;
+    }
+    list.innerHTML = items.map(function(v){
+      var st = STATUS[v.status];
+      return '<div class="pic-card '+(v.id===state.picCurrentId?'selected':'')+'" data-id="'+v.id+'">'+
+        '<div class="top-row"><div class="ttl">'+escapeHtml(v.judul)+(v.reopened?'<span class="reopen-tag">Reopened</span>':'')+'</div>'+
+        '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
+        '<div class="meta">'+escapeHtml(v.area)+' • '+escapeHtml(v.kategori)+' • PIC: '+escapeHtml(v.pic||"-")+'</div>'+
+        '<div class="idline">'+v.id+' &middot; '+fmtDate(v.created)+'</div>'+
+      '</div>';
+    }).join("");
+    list.querySelectorAll(".pic-card").forEach(function(el){
+      el.addEventListener("click", function(){
+        state.picCurrentId = el.dataset.id;
+        renderPicList();
+        renderPicDetail(state.picCurrentId);
+      });
+    });
+  }
+
+  function refreshPicViews(){
+    renderPicList();
+    renderPicDetail(state.picCurrentId);
+    if(state.role === "pelapor"){ renderStats(); if(state.screen==="riwayat") renderList(); if(state.screen==="detail") renderDetail(state.currentId); }
+  }
+
+  function renderPicDetail(id){
+    var box = document.getElementById("pic-detail");
+    var v = findVoice(id);
+    if(!v){ box.innerHTML = '<div class="empty-state">Pilih voice di daftar untuk melihat detail.</div>'; return; }
+    var st = STATUS[v.status];
+
+    var tlHtml = v.timeline.map(function(t,i){
+      var isLast = i === v.timeline.length-1;
+      var cls = t.done ? (isLast ? "active" : "done") : "";
+      return '<div class="tl-item '+cls+'">'+
+        '<div class="tl-title">'+escapeHtml(t.title)+'</div>'+
+        '<div class="tl-time">'+fmtDate(t.time)+' &middot; '+escapeHtml(t.who)+'</div>'+
+        (t.note ? '<div class="tl-note">'+escapeHtml(t.note)+'</div>' : '') +
+      '</div>';
+    }).join("");
+
+    var actionHtml = "";
+    if(v.status === "open"){
+      actionHtml = '<div class="pic-action-box"><h4>Aksi saat status OPEN</h4>'+
+        '<div class="btn-row">'+
+          '<button class="btn btn-ghost btn-sm" id="act-tanya">🗣️ Tanya User</button>'+
+          '<button class="btn btn-ghost btn-sm" id="act-proceed">▶️ Proceed</button>'+
+          '<button class="btn btn-ghost btn-sm" id="act-assign">👤 Assign PIC</button>'+
+        '</div>'+
+        '<div class="clarify-row" id="tanya-row" style="display:none;">'+
+          '<input type="text" id="tanya-input" placeholder="Tulis pertanyaan klarifikasi untuk pelapor...">'+
+          '<button class="btn btn-primary btn-sm" id="tanya-submit">Kirim Pertanyaan</button>'+
+        '</div>'+
+        '<div class="assign-row" id="assign-row" style="display:none;">'+
+          '<select id="assign-select">'+PIC_ROSTER.map(function(p){ return '<option value="'+escapeHtml(p.name)+'">'+escapeHtml(p.name)+' (beban: '+p.workload+')</option>'; }).join("")+'</select>'+
+          '<button class="btn btn-primary btn-sm" id="assign-submit">Tugaskan</button>'+
+        '</div>'+
+      '</div>';
+    } else if(v.status === "verification"){
+      actionHtml = '<div class="pic-action-box"><h4>Menunggu klarifikasi / penugasan selesai</h4>'+
+        '<p style="font-size:12px;color:var(--gray-600);margin:0 0 10px;">Setelah klarifikasi dari pelapor terselesaikan atau PIC siap menangani, lanjutkan ke In Progress.</p>'+
+        '<button class="btn btn-primary" id="act-verifdone">✅ Klarifikasi Selesai, Mulai Tangani</button>'+
+      '</div>';
+    } else if(v.status === "progress"){
+      actionHtml = '<div class="pic-action-box"><h4>Update Progress</h4>'+
+        '<div class="update-log"><textarea id="update-text" placeholder="Tulis update progress penanganan..."></textarea>'+
+        '<button class="btn btn-ghost btn-sm" id="act-update">➕ Tambah Update</button></div>'+
+      '</div>'+
+      '<div class="pic-action-box"><h4>Selesaikan Voice</h4>'+
+        '<p style="font-size:12px;color:var(--gray-600);margin:0 0 8px;">Foto bukti penanganan wajib diunggah sebelum menutup voice.</p>'+
+        '<label class="photo-upload" id="close-photo-label">📷 Unggah Foto Bukti<input type="file" id="close-photo-input" accept="image/*" style="display:none"></label>'+
+        '<div class="photo-preview" id="close-photo-preview"><img id="close-photo-img" src=""></div>'+
+        '<button class="btn btn-primary" id="act-markclosed" style="margin-top:10px;" disabled>🔒 Tandai Selesai (Mark Closed)</button>'+
+      '</div>';
+    } else {
+      actionHtml = '<div class="pic-action-box"><h4>Voice Closed</h4>'+
+        (v.closePhoto ? '<img class="preview-photo" src="'+v.closePhoto+'" style="margin-bottom:10px;">' : '') +
+        (v.rating > 0 ? '<div class="stars">'+[1,2,3,4,5].map(function(n){return '<span class="'+(n<=v.rating?"on":"")+'">★</span>';}).join("")+'</div>'+(v.feedback?'<div class="tl-note">'+escapeHtml(v.feedback)+'</div>':'') : '<p style="font-size:12px;color:var(--gray-600);margin:0;">Menunggu rating dari pelapor.</p>') +
+      '</div>';
+    }
+
+    box.innerHTML =
+      '<div class="detail-card">'+
+        '<div class="tags"><div class="pill">'+escapeHtml(v.kategori)+'</div><div class="pill '+severityPillClass(v.severity)+'">Severity: '+escapeHtml(v.severity)+'</div>'+
+        '<div class="status-tag '+st.cls+'">'+st.label+'</div>'+(v.reopened?'<span class="reopen-tag">Reopened</span>':'')+'</div>'+
+        '<div class="ttl">'+escapeHtml(v.judul)+'</div>'+
+        '<div class="idrow">ID: '+v.id+' &middot; '+escapeHtml(v.area)+' &middot; PIC ditugaskan: '+escapeHtml(v.pic||"-")+'</div>'+
+        (v.lokasi ? '<div class="idrow" style="margin-top:4px;">📍 '+escapeHtml(v.lokasi)+'</div>' : '') +
+        '<div class="idrow" style="margin-top:4px;">👤 '+(v.identity ? "Open Identity" : "Anonim")+'</div>'+
+        (v.photo ? '<div style="margin-top:10px;"><img class="preview-photo" src="'+v.photo+'"></div>' : '') +
+        '<div style="margin-top:10px;font-size:12.5px;color:var(--gray-600);">'+escapeHtml(v.detail)+'</div>'+
+      '</div>'+
+      '<div class="detail-card">'+statusTrackHtml(v.status)+'</div>'+
+      actionHtml+
+      '<div class="detail-card"><div class="timeline">'+tlHtml+'</div></div>';
+
+    wirePicActions(v);
+  }
+
+  function wirePicActions(v){
+    var tanyaBtn = document.getElementById("act-tanya");
+    var proceedBtn = document.getElementById("act-proceed");
+    var assignBtn = document.getElementById("act-assign");
+    if(tanyaBtn){
+      tanyaBtn.addEventListener("click", function(){
+        document.getElementById("tanya-row").style.display = "block";
+        document.getElementById("assign-row").style.display = "none";
+      });
+      document.getElementById("tanya-submit").addEventListener("click", function(){
+        var q = document.getElementById("tanya-input").value.trim();
+        if(!q){ showToast("Tulis pertanyaan klarifikasi terlebih dahulu."); return; }
+        v.status = "verification";
+        v.timeline.push({ title:"PIC menanyakan klarifikasi", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true, note:q });
+        showToast("Pertanyaan dikirim ke pelapor. Status → In Verification.");
+        refreshPicViews();
+      });
+      proceedBtn.addEventListener("click", function(){
+        v.status = "progress";
+        v.timeline.push({ title:"PIC menerima & mulai menindaklanjuti voice", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true });
+        showToast("Voice diterima. Status → In Progress.");
+        refreshPicViews();
+      });
+      assignBtn.addEventListener("click", function(){
+        document.getElementById("assign-row").style.display = "flex";
+        document.getElementById("tanya-row").style.display = "none";
+      });
+      document.getElementById("assign-submit").addEventListener("click", function(){
+        var name = document.getElementById("assign-select").value;
+        v.pic = name;
+        v.status = "verification";
+        v.timeline.push({ title:"Voice ditugaskan ke "+name, who:"Sistem", time:new Date(), done:true });
+        showToast("Voice ditugaskan ke "+name+". Status → In Verification.");
+        refreshPicViews();
+      });
+    }
+    var verifDoneBtn = document.getElementById("act-verifdone");
+    if(verifDoneBtn){
+      verifDoneBtn.addEventListener("click", function(){
+        v.status = "progress";
+        v.timeline.push({ title:"Klarifikasi selesai, PIC mulai menangani voice", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true });
+        showToast("Status → In Progress.");
+        refreshPicViews();
+      });
+    }
+    var updateBtn = document.getElementById("act-update");
+    if(updateBtn){
+      updateBtn.addEventListener("click", function(){
+        var text = document.getElementById("update-text").value.trim();
+        if(!text){ showToast("Tulis update progress terlebih dahulu."); return; }
+        v.timeline.push({ title:"Update progress", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true, note:text });
+        showToast("Update progress ditambahkan.");
+        refreshPicViews();
+      });
+      var closePhotoData = null;
+      document.getElementById("close-photo-input").addEventListener("change", function(e){
+        var file = e.target.files[0];
+        if(!file) return;
+        var reader = new FileReader();
+        reader.onload = function(ev){
+          closePhotoData = ev.target.result;
+          document.getElementById("close-photo-img").src = closePhotoData;
+          document.getElementById("close-photo-preview").classList.add("show");
+          document.getElementById("act-markclosed").disabled = false;
+        };
+        reader.readAsDataURL(file);
+      });
+      document.getElementById("act-markclosed").addEventListener("click", function(){
+        if(!closePhotoData){ showToast("Unggah foto bukti terlebih dahulu."); return; }
+        v.status = "closed";
+        v.closePhoto = closePhotoData;
+        v.timeline.push({ title:"Voice ditutup oleh PIC (Closed)", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true });
+        showToast("Voice ditutup. Menunggu rating dari pelapor.");
+        refreshPicViews();
+      });
+    }
+  }
+
+  /* ---- Reset demo ---- */
+  document.getElementById("btn-reset-demo").addEventListener("click", function(){
+    location.reload();
+  });
 
   /* clock */
   function tickClock(){
