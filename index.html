@@ -76,12 +76,12 @@
   .step-btn.active .num{ background:var(--white); color:var(--navy-800); }
   .hint-pill{
     background:var(--white); border:1px dashed var(--gray-200); border-radius:999px;
-    padding:8px 16px; font-size:12px; color:var(--gray-600); font-weight:600;
+    padding:8px 16px; font-size:12px; color:var(--gray-600); font-weight:600; text-align:center;
   }
 
   .stage{ display:flex; gap:28px; align-items:flex-start; justify-content:center; flex-wrap:wrap; width:100%; max-width:1180px; }
 
-  /* Phone frame */
+  /* Phone frame (shared by Pelapor & Responder/PIC) */
   .phone{ width:360px; height:760px; background:#0b0e18; border-radius:46px; padding:12px;
     box-shadow:0 30px 60px rgba(10,20,60,0.28), 0 2px 0 rgba(255,255,255,0.4) inset; position:relative; flex:none; }
   .phone-screen{ width:100%; height:100%; background:var(--gray-100); border-radius:34px; overflow:hidden; position:relative; display:flex; flex-direction:column; }
@@ -92,13 +92,6 @@
   .app-body::-webkit-scrollbar{ width:0; }
   .screen{ display:none; flex-direction:column; height:100%; }
   .screen.active{ display:flex; }
-
-  /* Browser / dashboard frame */
-  .browser{ width:640px; max-width:92vw; background:#0b0e18; border-radius:20px; padding:10px; box-shadow:0 30px 60px rgba(10,20,60,0.28); flex:none; }
-  .browser-chrome{ display:flex; align-items:center; gap:8px; padding:8px 10px 10px; }
-  .chrome-dot{ width:10px; height:10px; border-radius:50%; }
-  .browser-addr{ flex:1; background:rgba(255,255,255,0.08); color:#cfd6ea; font-size:11px; border-radius:999px; padding:6px 14px; margin-left:6px; }
-  .browser-screen{ width:100%; height:730px; background:var(--gray-100); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
 
   /* Generic header */
   .app-header{ background:linear-gradient(135deg,var(--navy-800),var(--navy-700)); color:#fff; padding:14px 18px 16px; display:flex; align-items:center; gap:12px; flex:none; }
@@ -229,7 +222,7 @@
   .status-labels{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--gray-400); font-weight:700; margin-bottom:14px; }
   .status-labels span.on{ color:var(--navy-800); }
 
-  /* Riwayat / PIC list */
+  /* Riwayat / lists */
   .filter-row{ display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px; }
   .chip{ flex:none; padding:7px 12px; border-radius:999px; font-size:11.5px; font-weight:700; background:var(--white); border:1px solid var(--gray-200); color:var(--gray-600); cursor:pointer; white-space:nowrap; }
   .chip.active{ background:var(--navy-800); color:#fff; border-color:var(--navy-800); }
@@ -240,7 +233,6 @@
 
   .voice-item{ background:var(--white); border:1px solid var(--gray-200); border-radius:14px; padding:13px 14px; margin-bottom:10px; cursor:pointer; transition:.15s; }
   .voice-item:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
-  .voice-item.selected{ border-color:var(--blue-500); box-shadow:0 0 0 2px var(--blue-50); }
   .voice-item .top-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px; }
   .voice-item .ttl{ font-size:13.5px; font-weight:700; color:var(--gray-900); }
   .status-tag{ font-size:10px; font-weight:800; padding:3px 8px; border-radius:999px; flex:none; white-space:nowrap; }
@@ -300,31 +292,37 @@
   .leg-dot{ width:9px; height:9px; border-radius:50%; flex:none; }
   .side-note ol{ margin:0; padding-left:18px; }
   .side-note ol li{ margin-bottom:8px; }
-  @media (max-width:1040px){ .side-note{ order:2; width:100%; max-width:640px; } }
+  @media (max-width:1040px){ .side-note{ order:2; width:100%; max-width:360px; } }
 
-  /* PIC dashboard */
-  .pic-topbar{ background:linear-gradient(135deg,var(--navy-800),var(--navy-700)); color:#fff; padding:14px 18px; display:flex; align-items:center; gap:12px; flex:none; }
-  .pic-topbar .title-block{ flex:1; }
-  .pic-topbar h2{ margin:0; font-size:16px; }
-  .pic-topbar .sub{ font-size:11px; opacity:.8; margin-top:2px; }
-  .pic-filters{ padding:12px 16px 0; flex:none; }
-  .pic-body{ display:flex; flex:1; overflow:hidden; }
-  .pic-list-col{ width:44%; border-right:1px solid var(--gray-200); overflow-y:auto; padding:0 10px 16px 16px; flex:none; }
-  .pic-detail-col{ flex:1; overflow-y:auto; padding:16px 18px 30px; }
-  .pic-card{ background:var(--white); border:1px solid var(--gray-200); border-radius:12px; padding:11px 12px; margin-bottom:9px; cursor:pointer; font-size:12px; }
-  .pic-card:hover{ box-shadow:var(--shadow); }
-  .pic-card.selected{ border-color:var(--blue-500); box-shadow:0 0 0 2px var(--blue-50); }
-  .pic-card .ttl{ font-weight:700; font-size:12.5px; margin-bottom:4px; }
+  /* Responder/PIC — Beranda charts & summary */
+  .chart-card{ background:var(--white); border:1px solid var(--gray-200); border-radius:14px; padding:14px; margin-bottom:14px; }
+  .chart-card h4{ margin:0 0 12px; font-size:13px; }
+  .pie-wrap{ display:flex; align-items:center; gap:16px; }
+  .pie{ width:104px;height:104px;border-radius:50%; flex:none; }
+  .pie-legend{ flex:1; font-size:11.5px; }
+  .pie-legend .li{ display:flex; align-items:center; justify-content:space-between; gap:7px; margin-bottom:7px; }
+  .pie-legend .li:last-child{ margin-bottom:0; }
+  .pie-legend .sw{ width:9px;height:9px;border-radius:50%; flex:none; }
+  .bar-chart{ display:flex; align-items:flex-end; gap:10px; }
+  .bar-unit{ flex:1; display:flex; flex-direction:column; align-items:stretch; }
+  .bar-col{ height:110px; display:flex; flex-direction:column-reverse; border-radius:4px 4px 0 0; overflow:hidden; background:var(--gray-100); }
+  .bar-seg{ width:100%; }
+  .bar-unit .lbl{ margin-top:6px; font-size:8.5px; text-align:center; color:var(--gray-600); font-weight:700; }
+  .summary-box{ background:var(--white); border:1px solid var(--gray-200); border-radius:14px; padding:14px; margin-bottom:14px; }
+  .summary-box h4{ margin:0 0 10px; font-size:13px; display:flex; align-items:center; gap:8px; }
+  .badge-letter{ width:20px;height:20px;border-radius:6px; background:var(--navy-800); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex:none; }
+  .summary-total{ font-size:24px; font-weight:800; color:var(--navy-800); margin-bottom:10px; }
+  .summary-total span{ font-size:11px; color:var(--gray-600); font-weight:600; }
+  .summary-row{ display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+  .summary-row:last-child{ margin-bottom:0; }
+  .summary-chip{ flex:1; min-width:58px; background:var(--gray-100); border-radius:8px; padding:6px 4px; text-align:center; }
+  .summary-chip .n{ font-size:14px; font-weight:800; }
+  .summary-chip .l{ font-size:8.5px; color:var(--gray-600); font-weight:700; margin-top:2px; }
+
+  /* Responder/PIC — action controls */
+  .pic-select{ width:100%; border:1px solid var(--gray-200); border-radius:10px; padding:10px 12px; font-size:13px; background:var(--white); margin-bottom:10px; font-family:inherit; }
   .pic-action-box{ background:var(--white); border:1px solid var(--gray-200); border-radius:14px; padding:14px; margin-bottom:14px; }
   .pic-action-box h4{ margin:0 0 10px; font-size:13px; }
-  .pic-action-box .btn-row{ flex-wrap:wrap; }
-  .pic-action-box .btn-row .btn{ flex:1 1 auto; min-width:120px; }
-  .update-log{ margin-top:12px; }
-  .update-log textarea{ width:100%; border:1px solid var(--gray-200); border-radius:10px; padding:10px; font-size:12.5px; min-height:60px; font-family:inherit; margin-bottom:8px; }
-  .assign-row{ display:flex; gap:8px; margin-top:8px; }
-  .assign-row select{ flex:1; border:1px solid var(--gray-200); border-radius:10px; padding:8px; font-size:12.5px; }
-  .clarify-row{ margin-top:8px; }
-  .clarify-row input{ width:100%; border:1px solid var(--gray-200); border-radius:10px; padding:9px 11px; font-size:12.5px; margin-bottom:8px; }
 
   .reset-btn{ position:fixed; top:14px; right:14px; background:var(--white); border:1px solid var(--gray-200); border-radius:999px; padding:8px 14px; font-size:11.5px; font-weight:700; color:var(--gray-600); cursor:pointer; box-shadow:var(--shadow); z-index:500; }
   .reset-btn:hover{ color:var(--red-600); border-color:var(--red-600); }
@@ -336,7 +334,7 @@
 
   <div class="page-head">
     <h1>🤝 CARE — Voice Menu Flow Prototype</h1>
-    <p>Prototipe interaktif: Pelapor mengajukan voice → AI menganalisis &amp; merutekan → Responder/PIC menindaklanjuti. Ganti peran di bawah untuk demo kedua sisi.</p>
+    <p>Prototipe interaktif: Pelapor mengajukan voice → AI menganalisis &amp; merutekan → Responder/PIC (Manager Level) menindaklanjuti. Ganti peran di bawah untuk demo kedua sisi — keduanya kini dalam tampilan handphone.</p>
   </div>
 
   <div class="role-tabs" id="role-tabs">
@@ -346,7 +344,7 @@
 
   <div class="stepper" id="stepper"></div>
   <div class="pic-hint" id="pic-hint">
-    <div class="hint-pill">🔔 Voice baru masuk sebagai <b>OPEN</b> → tindak lanjuti di panel kanan untuk memindahkannya melalui alur status.</div>
+    <div class="hint-pill">🔔 Voice baru akan tampil di Beranda &amp; Riwayat Voice Member sebagai <b>OPEN</b>. Buka detailnya untuk mulai menindaklanjuti.</div>
   </div>
 
   <div class="stage">
@@ -599,30 +597,111 @@
       </div>
     </div>
 
-    <div class="browser" id="pic-wrap" style="display:none;">
-      <div class="browser-chrome">
-        <div class="chrome-dot" style="background:#ff5f57;"></div>
-        <div class="chrome-dot" style="background:#febc2e;"></div>
-        <div class="chrome-dot" style="background:#28c840;"></div>
-        <div class="browser-addr">🔒 care-admin.tmmin.co.id/voice</div>
-      </div>
-      <div class="browser-screen">
-        <div class="pic-topbar">
-          <div class="title-block"><h2>Responder / PIC Dashboard</h2><div class="sub">Kelola &amp; tindak lanjuti voice masuk</div></div>
-          <button class="icon-btn">🔔<span class="badge" id="pic-notif-count">0</span></button>
+    <div class="phone" id="pic-wrap" style="display:none;">
+      <div class="notch"></div>
+      <div class="phone-screen">
+        <div class="status-bar">
+          <span id="pic-clock">9:41</span>
+          <div class="icons"><span>📶</span><span>🔋</span></div>
         </div>
-        <div class="pic-filters">
-          <div class="filter-row" id="pic-filter-row">
-            <div class="chip active" data-picfilter="semua">Semua</div>
-            <div class="chip c-open" data-picfilter="open">Open</div>
-            <div class="chip c-verif" data-picfilter="verification">In Verification</div>
-            <div class="chip c-prog" data-picfilter="progress">In Progress</div>
-            <div class="chip c-closed" data-picfilter="closed">Closed</div>
+        <div class="app-body" id="picAppBody">
+
+          <!-- 1. Beranda Voice (tampilan depan) -->
+          <div class="screen" id="screen-pic-beranda">
+            <div class="app-header">
+              <button class="icon-btn">☰</button>
+              <div class="title-block"><h2>CARE Voice – Manager</h2><div class="sub">Beranda Voice</div></div>
+              <button class="icon-btn">🔔<span class="badge" id="pic-bell-count">0</span></button>
+            </div>
+            <div class="content-scroll">
+              <div class="chart-card">
+                <h4>Progress Voice (Divisi)</h4>
+                <div class="pie-wrap">
+                  <div class="pie" id="pie-mount"></div>
+                  <div class="pie-legend" id="pie-legend"></div>
+                </div>
+              </div>
+              <div class="chart-card">
+                <h4>Progress per Departemen (Divisi)</h4>
+                <div class="bar-chart" id="bar-mount"></div>
+              </div>
+              <div class="summary-box" id="summary-member"></div>
+              <div class="summary-box" id="summary-mine"></div>
+              <button class="btn btn-primary" id="btn-pic-buat-voice" style="margin-bottom:14px;">➕ Buat Voice</button>
+              <div class="section-label">Riwayat</div>
+              <div class="btn-row">
+                <button class="btn btn-ghost" data-picnav="pic-list">👥 Riwayat Voice Member</button>
+                <button class="btn btn-ghost" data-picnav="pic-my-list">👤 Riwayat Voice Saya</button>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="pic-body">
-          <div class="pic-list-col" id="pic-list"></div>
-          <div class="pic-detail-col" id="pic-detail"></div>
+
+          <!-- 2. Voice Member Masuk -->
+          <div class="screen" id="screen-pic-list">
+            <div class="app-header">
+              <button class="icon-btn" data-picnav="pic-beranda">‹</button>
+              <div class="title-block"><h2>Voice Member Masuk</h2><div class="sub" id="pic-list-sub">Menampilkan voice…</div></div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="content-scroll">
+              <div class="field" style="margin-bottom:10px;">
+                <input type="text" id="pic-search" placeholder="🔍 Cari judul voice...">
+              </div>
+              <div style="display:flex;gap:8px;">
+                <select id="pic-status-filter" class="pic-select">
+                  <option value="semua">Semua Status</option>
+                  <option value="open">Open</option>
+                  <option value="verification">In Verification</option>
+                  <option value="progress">In Progress</option>
+                  <option value="closed">Closed</option>
+                </select>
+                <select id="pic-sort" class="pic-select">
+                  <option value="terbaru">Terbaru</option>
+                  <option value="terlama">Terlama</option>
+                </select>
+              </div>
+              <div id="pic-list-items"></div>
+            </div>
+          </div>
+
+          <!-- 3/4/5. Detail Voice (aksi Open / In Verification / In Progress / Mark Closed) -->
+          <div class="screen" id="screen-pic-detail">
+            <div class="app-header">
+              <button class="icon-btn" data-picnav="pic-list">‹</button>
+              <div class="title-block"><h2>Detail Voice</h2><div class="sub">Tindak lanjuti voice member</div></div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="content-scroll" id="pic-detail-content"></div>
+          </div>
+
+          <!-- Riwayat Voice Saya -->
+          <div class="screen" id="screen-pic-my-list">
+            <div class="app-header">
+              <button class="icon-btn" data-picnav="pic-beranda">‹</button>
+              <div class="title-block"><h2>Riwayat Voice Saya</h2><div class="sub">Voice yang Anda ajukan sendiri</div></div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="content-scroll">
+              <div class="filter-row" id="pic-my-filter-row">
+                <div class="chip active" data-myfilter="semua">Semua</div>
+                <div class="chip c-open" data-myfilter="open">Open</div>
+                <div class="chip c-verif" data-myfilter="verification">In Verification</div>
+                <div class="chip c-prog" data-myfilter="progress">In Progress</div>
+                <div class="chip c-closed" data-myfilter="closed">Closed</div>
+              </div>
+              <div id="pic-my-list-items"></div>
+            </div>
+          </div>
+
+          <div class="screen" id="screen-pic-my-detail">
+            <div class="app-header">
+              <button class="icon-btn" data-picnav="pic-my-list">‹</button>
+              <div class="title-block"><h2>Pantau Progress</h2><div class="sub">Voice Saya</div></div>
+              <div style="width:34px"></div>
+            </div>
+            <div class="content-scroll" id="pic-my-detail-content"></div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -632,9 +711,10 @@
       <ol>
         <li>Sebagai <b>Pelapor</b>, buat voice baru (Buat Voice → isi form → review → submit).</li>
         <li>Lihat animasi AI merutekan voice, lalu status awalnya <b>OPEN</b>.</li>
-        <li>Beralih ke <b>Responder / PIC</b> — voice baru muncul di kolom kiri. Klik untuk buka &amp; ambil tindakan.</li>
-        <li>Proses melalui status hingga <b>Closed</b> (wajib unggah foto bukti saat menutup).</li>
+        <li>Beralih ke <b>Responder / PIC</b> — mulai dari Beranda Voice, lalu buka <b>Riwayat Voice Member</b> untuk menemukan voice baru.</li>
+        <li>Buka detailnya, pilih Aksi (Tanya User / Proceed / Assign PIC), lalu proses hingga <b>Closed</b> (wajib isi Catatan Penutupan &amp; foto bukti saat Mark Closed).</li>
         <li>Kembali ke <b>Pelapor</b> → buka Riwayat → beri rating. Rating 1–2 akan menawarkan opsi reopen.</li>
+        <li>Tombol <b>+ Buat Voice</b> di Beranda Manager membuka form yang sama sebagai "Voice Saya".</li>
       </ol>
       <h3 style="margin-top:16px;">Legenda status</h3>
       <div class="leg"><div class="leg-dot" style="background:#e0263d"></div>Open — menunggu tindakan PIC</div>
@@ -673,6 +753,9 @@
     closed:{label:"Closed", cls:"s-closed"}
   };
   var STATUS_ORDER = ["open","verification","progress","closed"];
+  var STATUS_COLOR_VAR = {open:"var(--red-600)", verification:"var(--amber-600)", progress:"var(--blue-600)", closed:"var(--green-600)"};
+  var DEPTS = ["Assembly","Welding","Painting","Quality","Logistics"];
+  var SECTION_HEADS = ["Andi Setiawan","Rina Kusuma","Budi Hartono","Sari Melati"];
 
   var PIC_ROSTER = [
     {name:"Andi", kategori:["Kesulitan Kerja","Fasilitas Plant"], workload:2},
@@ -699,11 +782,6 @@
     var chosen = candidates[0];
     chosen.workload += 1;
     return chosen.name;
-  }
-
-  function picFor(kategori){
-    var c = PIC_ROSTER.filter(function(p){ return p.kategori.indexOf(kategori) !== -1; });
-    return c.length ? c[0].name : "PIC Umum";
   }
 
   function severityFor(text){
@@ -752,49 +830,64 @@
   var seq = 6;
   var voices = [];
 
-  function mk(id, judul, detail, area, lokasi, status, kategori, createdAt, identity, pic, extraTl, rating, reopened){
-    var created = new Date(createdAt);
-    var tl = [{ title:"Voice disubmit ("+(identity?"Open Identity":"Anonim")+")", who:"Oleh Pelapor", time:created, done:true }];
-    tl.push({ title:"AI menganalisis & merutekan ke "+pic, who:"Sistem", time:addHrs(created,0), done:true });
-    if(extraTl) tl = tl.concat(extraTl);
+  function mk(cfg){
+    var created = new Date(cfg.createdAt);
+    var tl = [{ title:"Voice disubmit ("+(cfg.identity?"Open Identity":"Anonim")+")", who:"Oleh Pelapor", time:created, done:true }];
+    tl.push({ title:"AI menganalisis & merutekan ke "+cfg.pic, who:"Sistem", time:addHrs(created,0), done:true });
+    if(cfg.extraTl) tl = tl.concat(cfg.extraTl);
     return {
-      id:id, judul:judul, detail:detail, area:area, lokasi:lokasi,
-      status:status, kategori:kategori, severity:severityFor(judul+" "+detail),
-      identity:identity, photo:PLACEHOLDER_PHOTO, closePhoto:null, pic:pic,
-      created:created, timeline:tl, rating:rating||0, feedback:"", reopened:!!reopened
+      id:cfg.id, judul:cfg.judul, detail:cfg.detail, area:cfg.area, lokasi:cfg.lokasi,
+      status:cfg.status, kategori:cfg.kategori, severity:severityFor(cfg.judul+" "+cfg.detail),
+      identity:cfg.identity, photo:PLACEHOLDER_PHOTO, closePhoto:null, closeNote:cfg.closeNote||null, pic:cfg.pic,
+      created:created, timeline:tl, rating:cfg.rating||0, feedback:"", reopened:!!cfg.reopened,
+      reporter: cfg.reporter || (cfg.identity ? "Reporter Demo" : "Anonim"),
+      dept: cfg.dept || "Assembly",
+      mine: !!cfg.mine,
+      handler: cfg.handler || cfg.pic,
+      handlerRole: cfg.handlerRole || "Manager",
+      verifReason: cfg.verifReason || null
     };
   }
 
   function buildSeed(){
     seedRoster();
     voices = [
-      mk("VO-2025-0001","Toilet shop lantai 2 bocor","Air menggenang di depan toilet shop lantai 2, licin dan berbahaya.","KRW 1","Depan toilet shop lantai 2, dekat tangga","closed","Fasilitas Shop","2025-05-02T08:10:00", true, "Sari", [
-        {title:"PIC mulai menindaklanjuti voice", who:"PIC: Sari", time:addHrs(new Date("2025-05-02T08:10:00"),2), done:true},
-        {title:"Voice ditutup oleh PIC (Closed)", who:"PIC: Sari", time:addHrs(new Date("2025-05-02T08:10:00"),20), done:true, note:"Sudah diperbaiki, saluran air dibersihkan."}
-      ], 5, false),
-      mk("VO-2025-0002","Jadwal lembur mendadak tanpa info","Info lembur baru diberikan H-1, sulit atur jadwal pribadi.","KRW 2","Papan pengumuman dekat pintu masuk Line 3","progress","Kesulitan Kerja","2025-05-04T09:20:00", false, "Rina", [
-        {title:"PIC mulai menindaklanjuti voice", who:"PIC: Rina", time:addHrs(new Date("2025-05-04T09:20:00"),3), done:true},
-        {title:"Update progress", who:"PIC: Rina", time:addHrs(new Date("2025-05-04T09:20:00"),20), done:true, note:"Sedang koordinasi dengan supervisor shift terkait H-1 notice."}
-      ], 0, false),
-      mk("VO-2025-0003","AC ruang istirahat mati","AC di ruang istirahat plant tidak dingin sejak minggu lalu.","STR 1","Ruang istirahat plant, dekat pintu belakang","verification","Fasilitas Plant","2025-05-05T13:00:00", true, "Joko", [
-        {title:"PIC menanyakan klarifikasi", who:"PIC: Joko", time:addHrs(new Date("2025-05-05T13:00:00"),2), done:true, note:"Sejak kapan tepatnya AC mati total? Apakah ada suara aneh dari unit AC?"}
-      ], 0, false),
-      mk("VO-2025-0004","Rekan kerja sering intimidasi","Ada rekan kerja yang bersikap intimidatif ke anggota tim lain.","KRW 3","Area kerja Line 4, dekat pilar B2","verification","Private","2025-05-06T15:40:00", false, "Tim Committee", [
-        {title:"Voice ditugaskan ke Tim Committee", who:"Sistem", time:addHrs(new Date("2025-05-06T15:40:00"),1), done:true}
-      ], 0, false),
-      mk("VO-2025-0006","Kran wastafel shop rusak total","Kran wastafel di shop rusak total dan airnya mengalir terus tidak bisa dimatikan.","KRW 1","Wastafel shop, dekat pintu masuk","progress","Fasilitas Shop","2025-04-20T10:00:00", true, "Budi", [
-        {title:"PIC mulai menindaklanjuti voice", who:"PIC: Budi", time:addHrs(new Date("2025-04-20T10:00:00"),3), done:true},
-        {title:"Voice ditutup oleh PIC (Closed)", who:"PIC: Budi", time:addHrs(new Date("2025-04-20T10:00:00"),22), done:true, note:"Kran sudah diganti."},
-        {title:"Rating 2★ diberikan pelapor", who:"Oleh Pelapor", time:addHrs(new Date("2025-04-20T10:00:00"),30), done:true, note:"Kran baru bocor lagi setelah 2 hari."},
-        {title:"Voice dibuka kembali (Reopened)", who:"Oleh Pelapor", time:addHrs(new Date("2025-04-20T10:00:00"),30), done:true}
-      ], 2, true),
-      mk("VO-2025-0005","Lampu area line 2 redup","Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.","KRW 1","Depan Line 2, Dekat Mesin X","open","Fasilitas Plant","2025-05-12T09:15:00", true, "Andi", [], 0, false)
+      mk({id:"VO-2025-0001", judul:"Toilet shop lantai 2 bocor", detail:"Air menggenang di depan toilet shop lantai 2, licin dan berbahaya.", area:"KRW 1", lokasi:"Depan toilet shop lantai 2, dekat tangga", status:"closed", kategori:"Fasilitas Shop", createdAt:"2025-05-02T08:10:00", identity:true, pic:"Sari", reporter:"Budi Santoso", dept:"Assembly", handler:"Sari", handlerRole:"Manager", rating:5, closeNote:"Sudah diperbaiki, saluran air dibersihkan.",
+        extraTl:[
+          {title:"Manager menangani voice ini secara langsung", who:"Manager: Sari", time:addHrs(new Date("2025-05-02T08:10:00"),2), done:true},
+          {title:"Voice ditutup oleh PIC (Mark Closed)", who:"Manager: Sari", time:addHrs(new Date("2025-05-02T08:10:00"),20), done:true, note:"Sudah diperbaiki, saluran air dibersihkan."}
+        ]}),
+      mk({id:"VO-2025-0002", judul:"Jadwal lembur mendadak tanpa info", detail:"Info lembur baru diberikan H-1, sulit atur jadwal pribadi.", area:"KRW 2", lokasi:"Papan pengumuman dekat pintu masuk Line 3", status:"progress", kategori:"Kesulitan Kerja", createdAt:"2025-05-04T09:20:00", identity:false, pic:"Rina", reporter:"Anonim", dept:"Welding", handler:"Rina", handlerRole:"Manager",
+        extraTl:[
+          {title:"Manager menangani voice ini secara langsung", who:"Manager: Rina", time:addHrs(new Date("2025-05-04T09:20:00"),3), done:true},
+          {title:"Update progress", who:"Manager: Rina", time:addHrs(new Date("2025-05-04T09:20:00"),20), done:true, note:"Sedang koordinasi dengan supervisor shift terkait H-1 notice."}
+        ]}),
+      mk({id:"VO-2025-0003", judul:"AC ruang istirahat mati", detail:"AC di ruang istirahat plant tidak dingin sejak minggu lalu.", area:"STR 1", lokasi:"Ruang istirahat plant, dekat pintu belakang", status:"verification", kategori:"Fasilitas Plant", createdAt:"2025-05-05T13:00:00", identity:true, pic:"Joko", reporter:"Anda (Manager)", dept:"Painting", mine:true, handler:"Joko", handlerRole:"Manager", verifReason:"clarify",
+        extraTl:[
+          {title:"PIC menanyakan klarifikasi", who:"Manager: Joko", time:addHrs(new Date("2025-05-05T13:00:00"),2), done:true, note:"Sejak kapan tepatnya AC mati total? Apakah ada suara aneh dari unit AC?"}
+        ]}),
+      mk({id:"VO-2025-0004", judul:"Rekan kerja sering intimidasi", detail:"Ada rekan kerja yang bersikap intimidatif ke anggota tim lain.", area:"KRW 3", lokasi:"Area kerja Line 4, dekat pilar B2", status:"verification", kategori:"Private", createdAt:"2025-05-06T15:40:00", identity:false, pic:"Tim Committee", reporter:"Anonim", dept:"Quality", handler:"Andi Setiawan", handlerRole:"Section Head", verifReason:"assigned",
+        extraTl:[
+          {title:"Manager assign ke Section Head: Andi Setiawan", who:"Manager", time:addHrs(new Date("2025-05-06T15:40:00"),1), done:true, note:"Mohon tangani dengan hati-hati, ini kasus sensitif."}
+        ]}),
+      mk({id:"VO-2025-0006", judul:"Kran wastafel shop rusak total", detail:"Kran wastafel di shop rusak total dan airnya mengalir terus tidak bisa dimatikan.", area:"KRW 1", lokasi:"Wastafel shop, dekat pintu masuk", status:"progress", kategori:"Fasilitas Shop", createdAt:"2025-04-20T10:00:00", identity:true, pic:"Budi", reporter:"Anda (Manager)", dept:"Logistics", mine:true, handler:"Budi", handlerRole:"Manager", rating:2, reopened:true,
+        extraTl:[
+          {title:"Manager menangani voice ini secara langsung", who:"Manager: Budi", time:addHrs(new Date("2025-04-20T10:00:00"),3), done:true},
+          {title:"Voice ditutup oleh PIC (Mark Closed)", who:"Manager: Budi", time:addHrs(new Date("2025-04-20T10:00:00"),22), done:true, note:"Kran sudah diganti."},
+          {title:"Rating 2★ diberikan pelapor", who:"Oleh Pelapor", time:addHrs(new Date("2025-04-20T10:00:00"),30), done:true, note:"Kran baru bocor lagi setelah 2 hari."},
+          {title:"Voice dibuka kembali (Reopened)", who:"Oleh Pelapor", time:addHrs(new Date("2025-04-20T10:00:00"),30), done:true}
+        ]}),
+      mk({id:"VO-2025-0005", judul:"Lampu area line 2 redup", detail:"Lampu area line 2 terlihat redup terutama pada shift malam sehingga area kerja kurang terang.", area:"KRW 1", lokasi:"Depan Line 2, Dekat Mesin X", status:"open", kategori:"Fasilitas Plant", createdAt:"2025-05-12T09:15:00", identity:true, pic:"Andi", reporter:"Dedi Kurniawan", dept:"Logistics", handler:"Andi", handlerRole:"Manager"})
     ];
-    voices[5].feedback = "Kran baru bocor lagi setelah 2 hari.";
+    var six = voices.find(function(v){ return v.id==="VO-2025-0006"; });
+    if(six) six.feedback = "Kran baru bocor lagi setelah 2 hari.";
   }
   buildSeed();
 
-  var state = { screen:"mytmmin", role:"pelapor", filter:"semua", picFilter:"semua", currentId:null, picCurrentId:null, draft:null, aiTimers:[] };
+  var state = {
+    screen:"mytmmin", role:"pelapor", filter:"semua", currentId:null, draft:null, aiTimers:[],
+    picScreen:"pic-beranda", picCurrentId:null, picMyCurrentId:null, myListFilter:"semua", buatFromPic:false
+  };
 
   /* ---------- Role switch ---------- */
   document.getElementById("role-tabs").addEventListener("click", function(e){
@@ -809,15 +902,7 @@
     document.getElementById("pic-wrap").style.display = role === "pic" ? "block" : "none";
     document.getElementById("stepper").style.display = role === "pelapor" ? "flex" : "none";
     document.getElementById("pic-hint").style.display = role === "pic" ? "flex" : "none";
-    if(role === "pic"){
-      if(!state.picCurrentId){
-        var openOne = voices.find(function(v){ return v.status==="open"; });
-        state.picCurrentId = openOne ? openOne.id : (voices[0] ? voices[0].id : null);
-      }
-      renderPicFilters();
-      renderPicList();
-      renderPicDetail(state.picCurrentId);
-    }
+    if(role === "pic"){ goPic("pic-beranda"); }
   }
 
   /* ---------- Pelapor stepper ---------- */
@@ -871,6 +956,21 @@
     if(screen === "ai-processing"){ runAIProcessing(); }
   }
 
+  /* ---------- Responder/PIC navigation ---------- */
+  function goPic(screen){
+    document.querySelectorAll("#pic-wrap .screen").forEach(function(s){ s.classList.remove("active"); });
+    var el = document.getElementById("screen-"+screen);
+    if(el) el.classList.add("active");
+    state.picScreen = screen;
+    document.getElementById("picAppBody").scrollTop = 0;
+
+    if(screen === "pic-beranda"){ renderPicBeranda(); }
+    if(screen === "pic-list"){ renderPicListScreen(); }
+    if(screen === "pic-detail" && state.picCurrentId){ renderPicDetailScreen(state.picCurrentId); }
+    if(screen === "pic-my-list"){ renderPicMyList(); }
+    if(screen === "pic-my-detail" && state.picMyCurrentId){ renderDetail(state.picMyCurrentId, "pic-my-detail-content"); }
+  }
+
   document.body.addEventListener("click", function(e){
     var navEl = e.target.closest("[data-nav]");
     if(navEl){
@@ -878,6 +978,8 @@
       goTo(navEl.dataset.nav, filter ? {filter:filter} : {});
       return;
     }
+    var picNavEl = e.target.closest("[data-picnav]");
+    if(picNavEl){ goPic(picNavEl.dataset.picnav); return; }
     var toastEl = e.target.closest("[data-toast]");
     if(toastEl){ showToast(toastEl.dataset.toast); return; }
   });
@@ -1060,17 +1162,23 @@
     seq += 1;
     var idNum = String(seq).padStart(4,"0");
     var now = new Date();
+    var fromPic = !!state.buatFromPic;
+    state.buatFromPic = false;
+    var dept = DEPTS[Math.floor(Math.random()*DEPTS.length)];
     var v = {
       id: "VO-2025-"+idNum,
       judul: d.judul, detail: d.detail, area: d.area, lokasi: d.lokasi,
       status: "open", kategori: d.kategori, severity: d.severity, pic: d.pic,
-      identity: d.identity==="ya", photo: d.photo, closePhoto:null,
+      identity: d.identity==="ya", photo: d.photo, closePhoto:null, closeNote:null,
       created: now,
       timeline: [
         { title:"Voice disubmit ("+(d.identity==="ya"?"Open Identity":"Anonim")+")", who:"Oleh Pelapor", time: now, done:true },
         { title:"AI menganalisis & merutekan ke "+d.pic, who:"Sistem", time: now, done:true }
       ],
-      rating:0, feedback:"", reopened:false
+      rating:0, feedback:"", reopened:false,
+      reporter: d.identity==="ya" ? (fromPic ? "Anda (Manager)" : "Anda (Pelapor)") : "Anonim",
+      dept: dept, mine: fromPic,
+      handler: d.pic, handlerRole:"Manager", verifReason:null
     };
     voices.unshift(v);
     state.currentId = v.id;
@@ -1078,7 +1186,7 @@
     showToast("✅ Voice berhasil dikirim & diteruskan ke "+v.pic+"! ID "+v.id);
   }
 
-  /* ---- Riwayat list ---- */
+  /* ---- Riwayat list (Pelapor) ---- */
   function renderFilters(){
     document.querySelectorAll("#filter-row .chip").forEach(function(c){
       c.classList.toggle("active", c.dataset.filter === state.filter);
@@ -1151,9 +1259,11 @@
     return "sv-"+String(sv||"Low").toLowerCase();
   }
 
-  function renderDetail(id){
+  /* ---- Tracking detail — shared by Pelapor "Riwayat" and PIC "Voice Saya" ---- */
+  function renderDetail(id, containerId){
+    containerId = containerId || "detail-content";
     var v = findVoice(id);
-    var box = document.getElementById("detail-content");
+    var box = document.getElementById(containerId);
     if(!v){ box.innerHTML = '<div class="empty-state">Voice tidak ditemukan.</div>'; return; }
     var st = STATUS[v.status];
 
@@ -1175,11 +1285,11 @@
           (v.feedback ? '<div class="tl-note">'+escapeHtml(v.feedback)+'</div>' : '') +
           '<div class="rate-done">✓ Terima kasih atas feedback Anda</div></div>';
       } else {
-        rateHtml = '<div class="rate-box" id="rate-box-fresh"><h4>Berikan rating &amp; feedback</h4>'+
-          '<div class="stars" id="rate-stars">'+[1,2,3,4,5].map(function(n){return '<span data-n="'+n+'">★</span>';}).join("")+'</div>'+
-          '<textarea id="rate-feedback" placeholder="Ceritakan pengalaman Anda (wajib untuk rating 1-2, opsional untuk 3-5)" style="width:100%;border:1px solid var(--gray-200);border-radius:10px;padding:10px;font-size:12.5px;min-height:70px;font-family:inherit;"></textarea>'+
-          '<div class="field-error" id="err-rate">Mohon isi feedback untuk rating 1-2.</div>'+
-          '<button class="btn btn-primary" id="btn-submit-rate" style="margin-top:10px;">Kirim Rating</button></div>';
+        rateHtml = '<div class="rate-box" data-role="rate-box-fresh"><h4>Berikan rating &amp; feedback</h4>'+
+          '<div class="stars" data-role="rate-stars">'+[1,2,3,4,5].map(function(n){return '<span data-n="'+n+'">★</span>';}).join("")+'</div>'+
+          '<textarea data-role="rate-feedback" placeholder="Ceritakan pengalaman Anda (wajib untuk rating 1-2, opsional untuk 3-5)" style="width:100%;border:1px solid var(--gray-200);border-radius:10px;padding:10px;font-size:12.5px;min-height:70px;font-family:inherit;"></textarea>'+
+          '<div class="field-error" data-role="err-rate">Mohon isi feedback untuk rating 1-2.</div>'+
+          '<button class="btn btn-primary" data-role="btn-submit-rate" style="margin-top:10px;">Kirim Rating</button></div>';
       }
     }
 
@@ -1200,7 +1310,7 @@
 
     if(v.status === "closed" && v.rating === 0){
       var chosen = 0;
-      var starsEl = document.getElementById("rate-stars");
+      var starsEl = box.querySelector('[data-role="rate-stars"]');
       starsEl.addEventListener("click", function(e){
         var s = e.target.closest("span");
         if(!s) return;
@@ -1209,11 +1319,11 @@
           sp.classList.toggle("on", parseInt(sp.dataset.n,10) <= chosen);
         });
       });
-      document.getElementById("btn-submit-rate").addEventListener("click", function(){
+      box.querySelector('[data-role="btn-submit-rate"]').addEventListener("click", function(){
         if(chosen === 0){ showToast("Pilih rating bintang terlebih dahulu."); return; }
-        var fb = document.getElementById("rate-feedback").value.trim();
+        var fb = box.querySelector('[data-role="rate-feedback"]').value.trim();
         if(chosen <= 2 && !fb){
-          document.getElementById("err-rate").classList.add("show");
+          box.querySelector('[data-role="err-rate"]').classList.add("show");
           return;
         }
         v.rating = chosen;
@@ -1221,89 +1331,145 @@
         v.timeline.push({ title:"Rating "+chosen+"★ diberikan pelapor", who:"Oleh Pelapor", time:new Date(), done:true, note: fb || null });
 
         if(chosen <= 2){
-          renderReopenAsk(v);
+          renderReopenAsk(v, box, containerId);
         } else {
           showToast("Terima kasih atas rating Anda!");
-          renderDetail(v.id);
+          renderDetail(v.id, containerId);
         }
       });
     }
   }
 
-  function renderReopenAsk(v){
-    var box = document.getElementById("rate-box-fresh");
-    box.innerHTML = '<div class="reopen-ask">'+
+  function renderReopenAsk(v, box, containerId){
+    var host = box.querySelector('[data-role="rate-box-fresh"]');
+    host.innerHTML = '<div class="reopen-ask">'+
       '<p>Rating Anda rendah. Apakah Anda ingin membuka kembali (reopen) voice ini agar PIC menindaklanjuti lebih lanjut?</p>'+
-      '<div class="btn-row"><button class="btn btn-primary" id="btn-reopen-ya">Ya, Reopen</button>'+
-      '<button class="btn btn-ghost" id="btn-reopen-tidak">Tidak, Selesai</button></div>'+
+      '<div class="btn-row"><button class="btn btn-primary" data-role="btn-reopen-ya">Ya, Reopen</button>'+
+      '<button class="btn btn-ghost" data-role="btn-reopen-tidak">Tidak, Selesai</button></div>'+
     '</div>';
-    document.getElementById("btn-reopen-ya").addEventListener("click", function(){
+    host.querySelector('[data-role="btn-reopen-ya"]').addEventListener("click", function(){
       v.status = "progress";
       v.reopened = true;
       v.timeline.push({ title:"Voice dibuka kembali (Reopened)", who:"Oleh Pelapor", time:new Date(), done:true });
       showToast("Voice dibuka kembali & dikirim ulang ke PIC.");
-      renderDetail(v.id);
+      renderDetail(v.id, containerId);
     });
-    document.getElementById("btn-reopen-tidak").addEventListener("click", function(){
+    host.querySelector('[data-role="btn-reopen-tidak"]').addEventListener("click", function(){
       showToast("Terima kasih atas feedback Anda.");
-      renderDetail(v.id);
+      renderDetail(v.id, containerId);
     });
   }
 
-  /* ================= PIC DASHBOARD ================= */
-  document.getElementById("pic-filter-row").addEventListener("click", function(e){
-    var chip = e.target.closest(".chip");
-    if(!chip) return;
-    document.querySelectorAll("#pic-filter-row .chip").forEach(function(c){ c.classList.remove("active"); });
-    chip.classList.add("active");
-    state.picFilter = chip.dataset.picfilter;
-    renderPicList();
-  });
-  function renderPicFilters(){
-    document.querySelectorAll("#pic-filter-row .chip").forEach(function(c){
-      c.classList.toggle("active", c.dataset.picfilter === state.picFilter);
+  /* ================= RESPONDER / PIC (Manager Level) — phone screens ================= */
+
+  /* ---- 1. Beranda Voice (tampilan depan) ---- */
+  function renderPicBeranda(){
+    var counts = {open:0,verification:0,progress:0,closed:0};
+    voices.forEach(function(v){ counts[v.status]++; });
+    var total = voices.length || 1;
+    var acc = 0;
+    var stops = [];
+    STATUS_ORDER.forEach(function(k){
+      var pct = counts[k]/total*100;
+      var end = acc+pct;
+      stops.push(STATUS_COLOR_VAR[k]+" "+acc.toFixed(2)+"% "+end.toFixed(2)+"%");
+      acc = end;
     });
-  }
-  function picFilteredVoices(){
-    if(state.picFilter==="semua") return voices;
-    return voices.filter(function(v){ return v.status === state.picFilter; });
-  }
-  function renderPicList(){
-    document.getElementById("pic-notif-count").textContent = voices.filter(function(v){ return v.status==="open"; }).length;
-    var list = document.getElementById("pic-list");
-    var items = picFilteredVoices();
-    if(items.length===0){
-      list.innerHTML = '<div class="empty-state">Tidak ada voice pada status ini.</div>';
-      return;
+    document.getElementById("pie-mount").style.background = "conic-gradient("+stops.join(",")+")";
+    document.getElementById("pie-legend").innerHTML = STATUS_ORDER.map(function(k){
+      var pct = Math.round(counts[k]/total*100);
+      return '<div class="li"><span style="display:flex;align-items:center;gap:7px;"><span class="sw" style="background:'+STATUS_COLOR_VAR[k]+'"></span>'+STATUS[k].label+'</span><b>'+pct+'%</b></div>';
+    }).join("");
+
+    var deptData = {};
+    DEPTS.forEach(function(d){ deptData[d] = {open:0,verification:0,progress:0,closed:0}; });
+    voices.forEach(function(v){ if(deptData[v.dept]) deptData[v.dept][v.status]++; });
+    var totals = DEPTS.map(function(d){ var dd=deptData[d]; return dd.open+dd.verification+dd.progress+dd.closed; });
+    var maxTotal = Math.max.apply(null, totals.concat([1]));
+    document.getElementById("bar-mount").innerHTML = DEPTS.map(function(d){
+      var dd = deptData[d];
+      var segs = STATUS_ORDER.map(function(k){
+        var h = maxTotal ? (dd[k]/maxTotal*100) : 0;
+        return h>0 ? '<div class="bar-seg" style="height:'+h+'%;background:'+STATUS_COLOR_VAR[k]+';"></div>' : '';
+      }).join("");
+      return '<div class="bar-unit"><div class="bar-col">'+segs+'</div><div class="lbl">'+d+'</div></div>';
+    }).join("");
+
+    function summaryHtml(letter, title, list){
+      var c = {open:0,verification:0,progress:0,closed:0};
+      var sev = {Low:0,Medium:0,High:0,Critical:0};
+      list.forEach(function(v){ c[v.status]++; sev[v.severity] = (sev[v.severity]||0)+1; });
+      return '<h4><span class="badge-letter">'+letter+'</span> '+title+'</h4>'+
+        '<div class="summary-total">'+list.length+' <span>Total Voice</span></div>'+
+        '<div class="summary-row">'+
+          '<div class="summary-chip"><div class="n" style="color:var(--green-600)">'+sev.Low+'</div><div class="l">Low</div></div>'+
+          '<div class="summary-chip"><div class="n" style="color:var(--amber-600)">'+sev.Medium+'</div><div class="l">Medium</div></div>'+
+          '<div class="summary-chip"><div class="n" style="color:var(--orange-600)">'+sev.High+'</div><div class="l">High</div></div>'+
+          '<div class="summary-chip"><div class="n" style="color:var(--crit-700)">'+sev.Critical+'</div><div class="l">Critical</div></div>'+
+        '</div>'+
+        '<div class="summary-row">'+
+          '<div class="summary-chip"><div class="n" style="color:var(--red-600)">'+c.open+'</div><div class="l">Open</div></div>'+
+          '<div class="summary-chip"><div class="n" style="color:var(--amber-600)">'+c.verification+'</div><div class="l">Verif.</div></div>'+
+          '<div class="summary-chip"><div class="n" style="color:var(--blue-600)">'+c.progress+'</div><div class="l">Progress</div></div>'+
+          '<div class="summary-chip"><div class="n" style="color:var(--green-600)">'+c.closed+'</div><div class="l">Closed</div></div>'+
+        '</div>';
     }
-    list.innerHTML = items.map(function(v){
+    document.getElementById("summary-member").innerHTML = summaryHtml("A","Summary Voice Member", voices);
+    document.getElementById("summary-mine").innerHTML = summaryHtml("B","Summary Voice Saya", voices.filter(function(v){ return v.mine; }));
+
+    document.getElementById("pic-bell-count").textContent = voices.filter(function(v){ return v.status==="open"; }).length;
+  }
+
+  document.getElementById("btn-pic-buat-voice").addEventListener("click", function(){
+    state.buatFromPic = true;
+    setRole("pelapor");
+    goTo("isi-voice");
+  });
+
+  /* ---- 2. Voice Member Masuk (list) ---- */
+  document.getElementById("pic-status-filter").addEventListener("change", renderPicListScreen);
+  document.getElementById("pic-sort").addEventListener("change", renderPicListScreen);
+  document.getElementById("pic-search").addEventListener("input", renderPicListScreen);
+
+  function renderPicListScreen(){
+    var statusF = document.getElementById("pic-status-filter").value;
+    var sort = document.getElementById("pic-sort").value;
+    var q = document.getElementById("pic-search").value.trim().toLowerCase();
+    var items = voices.slice();
+    if(statusF!=="semua") items = items.filter(function(v){ return v.status===statusF; });
+    if(q) items = items.filter(function(v){ return v.judul.toLowerCase().indexOf(q)!==-1; });
+    items.sort(function(a,b){ return sort==="terbaru" ? b.created-a.created : a.created-b.created; });
+
+    document.getElementById("pic-list-sub").textContent = "Menampilkan "+items.length+" voice"+(statusF!=="semua" ? " dengan status "+STATUS[statusF].label : "")+".";
+
+    var box = document.getElementById("pic-list-items");
+    if(items.length===0){ box.innerHTML = '<div class="empty-state">Tidak ada voice yang cocok.</div>'; return; }
+    box.innerHTML = items.map(function(v){
       var st = STATUS[v.status];
-      return '<div class="pic-card '+(v.id===state.picCurrentId?'selected':'')+'" data-id="'+v.id+'">'+
+      return '<div class="voice-item" data-id="'+v.id+'">'+
         '<div class="top-row"><div class="ttl">'+escapeHtml(v.judul)+(v.reopened?'<span class="reopen-tag">Reopened</span>':'')+'</div>'+
         '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
-        '<div class="meta">'+escapeHtml(v.area)+' • '+escapeHtml(v.kategori)+' • PIC: '+escapeHtml(v.pic||"-")+'</div>'+
+        '<div class="meta">'+escapeHtml(v.kategori)+' • '+escapeHtml(v.area)+' – '+escapeHtml(v.dept)+'</div>'+
         '<div class="idline">'+v.id+' &middot; '+fmtDate(v.created)+'</div>'+
       '</div>';
     }).join("");
-    list.querySelectorAll(".pic-card").forEach(function(el){
+    box.querySelectorAll(".voice-item").forEach(function(el){
       el.addEventListener("click", function(){
         state.picCurrentId = el.dataset.id;
-        renderPicList();
-        renderPicDetail(state.picCurrentId);
+        goPic("pic-detail");
       });
     });
   }
 
-  function refreshPicViews(){
-    renderPicList();
-    renderPicDetail(state.picCurrentId);
-    if(state.role === "pelapor"){ renderStats(); if(state.screen==="riwayat") renderList(); if(state.screen==="detail") renderDetail(state.currentId); }
+  /* ---- 3/4/5. Detail Voice — action dropdown / verification / progress+close ---- */
+  function refreshPicAfterAction(id){
+    renderPicDetailScreen(id);
   }
 
-  function renderPicDetail(id){
-    var box = document.getElementById("pic-detail");
+  function renderPicDetailScreen(id){
     var v = findVoice(id);
-    if(!v){ box.innerHTML = '<div class="empty-state">Pilih voice di daftar untuk melihat detail.</div>'; return; }
+    var box = document.getElementById("pic-detail-content");
+    if(!v){ box.innerHTML = '<div class="empty-state">Voice tidak ditemukan.</div>'; return; }
     var st = STATUS[v.status];
 
     var tlHtml = v.timeline.map(function(t,i){
@@ -1318,52 +1484,60 @@
 
     var actionHtml = "";
     if(v.status === "open"){
-      actionHtml = '<div class="pic-action-box"><h4>Aksi saat status OPEN</h4>'+
-        '<div class="btn-row">'+
-          '<button class="btn btn-ghost btn-sm" id="act-tanya">🗣️ Tanya User</button>'+
-          '<button class="btn btn-ghost btn-sm" id="act-proceed">▶️ Proceed</button>'+
-          '<button class="btn btn-ghost btn-sm" id="act-assign">👤 Assign PIC</button>'+
+      actionHtml = '<div class="pic-action-box"><h4>Pilih Aksi</h4>'+
+        '<select class="pic-select" id="pic-action-select">'+
+          '<option value="">Pilih Aksi</option>'+
+          '<option value="tanya">Tanya User</option>'+
+          '<option value="proceed">Proceed</option>'+
+          '<option value="assign">Assign PIC</option>'+
+        '</select>'+
+        '<div id="assign-target-row" style="display:none;">'+
+          '<select class="pic-select" id="assign-target-select">'+SECTION_HEADS.map(function(h){ return '<option>'+escapeHtml(h)+'</option>'; }).join("")+'</select>'+
         '</div>'+
-        '<div class="clarify-row" id="tanya-row" style="display:none;">'+
-          '<input type="text" id="tanya-input" placeholder="Tulis pertanyaan klarifikasi untuk pelapor...">'+
-          '<button class="btn btn-primary btn-sm" id="tanya-submit">Kirim Pertanyaan</button>'+
-        '</div>'+
-        '<div class="assign-row" id="assign-row" style="display:none;">'+
-          '<select id="assign-select">'+PIC_ROSTER.map(function(p){ return '<option value="'+escapeHtml(p.name)+'">'+escapeHtml(p.name)+' (beban: '+p.workload+')</option>'; }).join("")+'</select>'+
-          '<button class="btn btn-primary btn-sm" id="assign-submit">Tugaskan</button>'+
-        '</div>'+
+        '<label style="font-size:12.5px;font-weight:700;display:block;margin-bottom:6px;">Catatan / Notes <span class="req">*</span></label>'+
+        '<textarea id="pic-notes" placeholder="Tulis catatan..." style="width:100%;border:1px solid var(--gray-200);border-radius:10px;padding:10px;font-size:12.5px;min-height:70px;font-family:inherit;margin-bottom:8px;"></textarea>'+
+        '<div class="field-error" id="pic-action-error">Pilih aksi dan isi catatan terlebih dahulu.</div>'+
+        '<button class="btn btn-primary" id="pic-action-send" style="margin-top:6px;">📨 Send</button>'+
       '</div>';
     } else if(v.status === "verification"){
-      actionHtml = '<div class="pic-action-box"><h4>Menunggu klarifikasi / penugasan selesai</h4>'+
-        '<p style="font-size:12px;color:var(--gray-600);margin:0 0 10px;">Setelah klarifikasi dari pelapor terselesaikan atau PIC siap menangani, lanjutkan ke In Progress.</p>'+
-        '<button class="btn btn-primary" id="act-verifdone">✅ Klarifikasi Selesai, Mulai Tangani</button>'+
+      var waitText = v.verifReason === "assigned"
+        ? "Ditangani oleh Section Head: <b>"+escapeHtml(v.handler)+"</b>. Menunggu Section Head memulai penanganan."
+        : "Menunggu klarifikasi dari reporter atas pertanyaan yang dikirim.";
+      actionHtml = '<div class="pic-action-box"><h4>Alur Status</h4>'+
+        '<p style="font-size:12px;color:var(--gray-600);margin:0 0 10px;">'+waitText+'</p>'+
+        '<button class="btn btn-primary" id="pic-verif-done">✅ '+(v.verifReason === "assigned" ? "Section Head Klik Proceed (Simulasi)" : "Klarifikasi Selesai, Mulai Tangani")+'</button>'+
       '</div>';
     } else if(v.status === "progress"){
-      actionHtml = '<div class="pic-action-box"><h4>Update Progress</h4>'+
-        '<div class="update-log"><textarea id="update-text" placeholder="Tulis update progress penanganan..."></textarea>'+
-        '<button class="btn btn-ghost btn-sm" id="act-update">➕ Tambah Update</button></div>'+
+      actionHtml = '<div class="pic-action-box"><h4>Tindakan / Progress</h4>'+
+        '<p style="font-size:11.5px;color:var(--gray-600);margin:0 0 8px;">Ditangani oleh '+escapeHtml(v.handlerRole)+': <b>'+escapeHtml(v.handler)+'</b></p>'+
+        '<textarea id="pic-update-text" placeholder="Tulis update progress..." style="width:100%;border:1px solid var(--gray-200);border-radius:10px;padding:10px;font-size:12.5px;min-height:60px;font-family:inherit;margin-bottom:8px;"></textarea>'+
+        '<button class="btn btn-ghost btn-sm" id="pic-add-update">➕ Tambah Update</button>'+
       '</div>'+
-      '<div class="pic-action-box"><h4>Selesaikan Voice</h4>'+
-        '<p style="font-size:12px;color:var(--gray-600);margin:0 0 8px;">Foto bukti penanganan wajib diunggah sebelum menutup voice.</p>'+
-        '<label class="photo-upload" id="close-photo-label">📷 Unggah Foto Bukti<input type="file" id="close-photo-input" accept="image/*" style="display:none"></label>'+
+      '<div class="pic-action-box"><h4>Aksi Penutupan <span style="font-weight:400;color:var(--gray-400);font-size:11px;">(hanya tersedia untuk handler)</span></h4>'+
+        '<label style="font-size:12.5px;font-weight:700;display:block;margin-bottom:6px;">Catatan Penutupan <span class="req">*</span></label>'+
+        '<textarea id="pic-close-note" placeholder="Tuliskan catatan penutupan..." style="width:100%;border:1px solid var(--gray-200);border-radius:10px;padding:10px;font-size:12.5px;min-height:60px;font-family:inherit;margin-bottom:10px;"></textarea>'+
+        '<label style="font-size:12.5px;font-weight:700;display:block;margin-bottom:6px;">Upload Foto Bukti <span class="req">*</span></label>'+
+        '<label class="photo-upload" id="close-photo-label">📷 Tap untuk upload foto (JPG/PNG, maks. 5 MB)<input type="file" id="close-photo-input" accept="image/*" style="display:none"></label>'+
         '<div class="photo-preview" id="close-photo-preview"><img id="close-photo-img" src=""></div>'+
-        '<button class="btn btn-primary" id="act-markclosed" style="margin-top:10px;" disabled>🔒 Tandai Selesai (Mark Closed)</button>'+
+        '<button class="btn btn-primary" id="act-markclosed" style="margin-top:10px;" disabled>✅ Mark Closed</button>'+
       '</div>';
     } else {
-      actionHtml = '<div class="pic-action-box"><h4>Voice Closed</h4>'+
+      actionHtml = '<div class="pic-action-box"><h4>✅ Voice berhasil di-Mark Closed</h4>'+
         (v.closePhoto ? '<img class="preview-photo" src="'+v.closePhoto+'" style="margin-bottom:10px;">' : '') +
+        (v.closeNote ? '<div class="tl-note" style="margin-bottom:10px;">'+escapeHtml(v.closeNote)+'</div>' : '') +
+        '<p style="font-size:11.5px;color:var(--gray-600);margin:0 0 10px;">🔔 Reporter akan menerima notifikasi untuk melakukan verifikasi penutupan.</p>'+
         (v.rating > 0 ? '<div class="stars">'+[1,2,3,4,5].map(function(n){return '<span class="'+(n<=v.rating?"on":"")+'">★</span>';}).join("")+'</div>'+(v.feedback?'<div class="tl-note">'+escapeHtml(v.feedback)+'</div>':'') : '<p style="font-size:12px;color:var(--gray-600);margin:0;">Menunggu rating dari pelapor.</p>') +
       '</div>';
     }
 
     box.innerHTML =
       '<div class="detail-card">'+
-        '<div class="tags"><div class="pill">'+escapeHtml(v.kategori)+'</div><div class="pill '+severityPillClass(v.severity)+'">Severity: '+escapeHtml(v.severity)+'</div>'+
-        '<div class="status-tag '+st.cls+'">'+st.label+'</div>'+(v.reopened?'<span class="reopen-tag">Reopened</span>':'')+'</div>'+
+        '<div class="tags"><div class="status-tag '+st.cls+'">'+st.label+'</div><div class="pill">'+escapeHtml(v.kategori)+' • '+escapeHtml(v.dept)+'</div><div class="pill '+severityPillClass(v.severity)+'">Severity: '+escapeHtml(v.severity)+'</div>'+(v.reopened?'<span class="reopen-tag">Reopened</span>':'')+'</div>'+
         '<div class="ttl">'+escapeHtml(v.judul)+'</div>'+
-        '<div class="idrow">ID: '+v.id+' &middot; '+escapeHtml(v.area)+' &middot; PIC ditugaskan: '+escapeHtml(v.pic||"-")+'</div>'+
+        '<div class="idrow">ID: '+v.id+'</div>'+
+        '<div class="idrow" style="margin-top:4px;">🗓 '+fmtDate(v.created)+'</div>'+
+        '<div class="idrow" style="margin-top:4px;">👤 Reporter: '+escapeHtml(v.identity ? v.reporter : "Anonim")+'</div>'+
         (v.lokasi ? '<div class="idrow" style="margin-top:4px;">📍 '+escapeHtml(v.lokasi)+'</div>' : '') +
-        '<div class="idrow" style="margin-top:4px;">👤 '+(v.identity ? "Open Identity" : "Anonim")+'</div>'+
         (v.photo ? '<div style="margin-top:10px;"><img class="preview-photo" src="'+v.photo+'"></div>' : '') +
         '<div style="margin-top:10px;font-size:12.5px;color:var(--gray-600);">'+escapeHtml(v.detail)+'</div>'+
       '</div>'+
@@ -1371,62 +1545,57 @@
       actionHtml+
       '<div class="detail-card"><div class="timeline">'+tlHtml+'</div></div>';
 
-    wirePicActions(v);
+    wirePicDetailActions(v);
   }
 
-  function wirePicActions(v){
-    var tanyaBtn = document.getElementById("act-tanya");
-    var proceedBtn = document.getElementById("act-proceed");
-    var assignBtn = document.getElementById("act-assign");
-    if(tanyaBtn){
-      tanyaBtn.addEventListener("click", function(){
-        document.getElementById("tanya-row").style.display = "block";
-        document.getElementById("assign-row").style.display = "none";
+  function wirePicDetailActions(v){
+    var sel = document.getElementById("pic-action-select");
+    if(sel){
+      sel.addEventListener("change", function(){
+        document.getElementById("assign-target-row").style.display = sel.value === "assign" ? "block" : "none";
       });
-      document.getElementById("tanya-submit").addEventListener("click", function(){
-        var q = document.getElementById("tanya-input").value.trim();
-        if(!q){ showToast("Tulis pertanyaan klarifikasi terlebih dahulu."); return; }
-        v.status = "verification";
-        v.timeline.push({ title:"PIC menanyakan klarifikasi", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true, note:q });
-        showToast("Pertanyaan dikirim ke pelapor. Status → In Verification.");
-        refreshPicViews();
-      });
-      proceedBtn.addEventListener("click", function(){
-        v.status = "progress";
-        v.timeline.push({ title:"PIC menerima & mulai menindaklanjuti voice", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true });
-        showToast("Voice diterima. Status → In Progress.");
-        refreshPicViews();
-      });
-      assignBtn.addEventListener("click", function(){
-        document.getElementById("assign-row").style.display = "flex";
-        document.getElementById("tanya-row").style.display = "none";
-      });
-      document.getElementById("assign-submit").addEventListener("click", function(){
-        var name = document.getElementById("assign-select").value;
-        v.pic = name;
-        v.status = "verification";
-        v.timeline.push({ title:"Voice ditugaskan ke "+name, who:"Sistem", time:new Date(), done:true });
-        showToast("Voice ditugaskan ke "+name+". Status → In Verification.");
-        refreshPicViews();
+      document.getElementById("pic-action-send").addEventListener("click", function(){
+        var action = sel.value;
+        var notes = document.getElementById("pic-notes").value.trim();
+        if(!action || !notes){
+          document.getElementById("pic-action-error").classList.add("show");
+          showToast("Pilih aksi dan isi catatan terlebih dahulu.");
+          return;
+        }
+        if(action === "tanya"){
+          v.status = "verification"; v.verifReason = "clarify";
+          v.timeline.push({ title:"PIC menanyakan klarifikasi", who:(v.handlerRole||"Manager")+": "+(v.handler||v.pic), time:new Date(), done:true, note:notes });
+          showToast("Pertanyaan dikirim ke reporter. Status → In Verification.");
+        } else if(action === "proceed"){
+          v.handler = v.handler || v.pic; v.handlerRole = "Manager"; v.status = "progress";
+          v.timeline.push({ title:"Manager menangani voice ini secara langsung", who:"Manager: "+v.handler, time:new Date(), done:true, note:notes });
+          showToast("Voice diterima. Status → In Progress.");
+        } else if(action === "assign"){
+          var target = document.getElementById("assign-target-select").value;
+          v.handler = target; v.handlerRole = "Section Head"; v.status = "verification"; v.verifReason = "assigned";
+          v.timeline.push({ title:"Manager assign ke Section Head: "+target, who:"Manager", time:new Date(), done:true, note:notes });
+          showToast("Voice ditugaskan ke "+target+". Status → In Verification.");
+        }
+        refreshPicAfterAction(v.id);
       });
     }
-    var verifDoneBtn = document.getElementById("act-verifdone");
-    if(verifDoneBtn){
-      verifDoneBtn.addEventListener("click", function(){
+    var verifBtn = document.getElementById("pic-verif-done");
+    if(verifBtn){
+      verifBtn.addEventListener("click", function(){
         v.status = "progress";
-        v.timeline.push({ title:"Klarifikasi selesai, PIC mulai menangani voice", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true });
+        v.timeline.push({ title: v.verifReason === "assigned" ? "Section Head mulai menangani voice (In Progress)" : "Klarifikasi selesai, PIC mulai menangani voice", who:(v.handlerRole||"Manager")+": "+(v.handler||v.pic), time:new Date(), done:true });
         showToast("Status → In Progress.");
-        refreshPicViews();
+        refreshPicAfterAction(v.id);
       });
     }
-    var updateBtn = document.getElementById("act-update");
-    if(updateBtn){
-      updateBtn.addEventListener("click", function(){
-        var text = document.getElementById("update-text").value.trim();
+    var addUpdateBtn = document.getElementById("pic-add-update");
+    if(addUpdateBtn){
+      addUpdateBtn.addEventListener("click", function(){
+        var text = document.getElementById("pic-update-text").value.trim();
         if(!text){ showToast("Tulis update progress terlebih dahulu."); return; }
-        v.timeline.push({ title:"Update progress", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true, note:text });
+        v.timeline.push({ title:"Update progress", who:(v.handlerRole||"Manager")+": "+(v.handler||v.pic), time:new Date(), done:true, note:text });
         showToast("Update progress ditambahkan.");
-        refreshPicViews();
+        refreshPicAfterAction(v.id);
       });
       var closePhotoData = null;
       document.getElementById("close-photo-input").addEventListener("change", function(e){
@@ -1437,19 +1606,55 @@
           closePhotoData = ev.target.result;
           document.getElementById("close-photo-img").src = closePhotoData;
           document.getElementById("close-photo-preview").classList.add("show");
-          document.getElementById("act-markclosed").disabled = false;
+          checkCloseReady();
         };
         reader.readAsDataURL(file);
       });
+      document.getElementById("pic-close-note").addEventListener("input", checkCloseReady);
+      function checkCloseReady(){
+        var note = document.getElementById("pic-close-note").value.trim();
+        document.getElementById("act-markclosed").disabled = !(note && closePhotoData);
+      }
       document.getElementById("act-markclosed").addEventListener("click", function(){
-        if(!closePhotoData){ showToast("Unggah foto bukti terlebih dahulu."); return; }
-        v.status = "closed";
-        v.closePhoto = closePhotoData;
-        v.timeline.push({ title:"Voice ditutup oleh PIC (Closed)", who:"PIC: "+(v.pic||"-"), time:new Date(), done:true });
-        showToast("Voice ditutup. Menunggu rating dari pelapor.");
-        refreshPicViews();
+        var note = document.getElementById("pic-close-note").value.trim();
+        if(!note || !closePhotoData){ showToast("Lengkapi catatan penutupan dan foto bukti."); return; }
+        v.status = "closed"; v.closePhoto = closePhotoData; v.closeNote = note;
+        v.timeline.push({ title:"Voice ditutup oleh PIC (Mark Closed)", who:(v.handlerRole||"Manager")+": "+(v.handler||v.pic), time:new Date(), done:true, note:note });
+        showToast("Voice berhasil di-Mark Closed.");
+        refreshPicAfterAction(v.id);
       });
     }
+  }
+
+  /* ---- Riwayat Voice Saya ---- */
+  document.getElementById("pic-my-filter-row").addEventListener("click", function(e){
+    var chip = e.target.closest(".chip");
+    if(!chip) return;
+    document.querySelectorAll("#pic-my-filter-row .chip").forEach(function(c){ c.classList.remove("active"); });
+    chip.classList.add("active");
+    state.myListFilter = chip.dataset.myfilter;
+    renderPicMyList();
+  });
+  function renderPicMyList(){
+    var items = voices.filter(function(v){ return v.mine; });
+    if(state.myListFilter && state.myListFilter !== "semua") items = items.filter(function(v){ return v.status === state.myListFilter; });
+    var box = document.getElementById("pic-my-list-items");
+    if(items.length===0){ box.innerHTML = '<div class="empty-state">Belum ada voice yang Anda ajukan.</div>'; return; }
+    box.innerHTML = items.map(function(v){
+      var st = STATUS[v.status];
+      return '<div class="voice-item" data-id="'+v.id+'">'+
+        '<div class="top-row"><div class="ttl">'+escapeHtml(v.judul)+(v.reopened?'<span class="reopen-tag">Reopened</span>':'')+'</div>'+
+        '<div class="status-tag '+st.cls+'">'+st.label+'</div></div>'+
+        '<div class="meta">'+escapeHtml(v.area)+' • '+escapeHtml(v.kategori)+'</div>'+
+        '<div class="idline">ID: '+v.id+' &middot; '+fmtDate(v.created)+'</div>'+
+      '</div>';
+    }).join("");
+    box.querySelectorAll(".voice-item").forEach(function(el){
+      el.addEventListener("click", function(){
+        state.picMyCurrentId = el.dataset.id;
+        goPic("pic-my-detail");
+      });
+    });
   }
 
   /* ---- Reset demo ---- */
@@ -1460,8 +1665,10 @@
   /* clock */
   function tickClock(){
     var d = new Date();
-    document.getElementById("clock").textContent =
-      d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0");
+    var txt = d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0");
+    document.getElementById("clock").textContent = txt;
+    var pc = document.getElementById("pic-clock");
+    if(pc) pc.textContent = txt;
   }
   tickClock();
   setInterval(tickClock, 30000);
